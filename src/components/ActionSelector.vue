@@ -23,7 +23,6 @@
     </v-list>
   </v-sheet>
 </template>
-
 <script setup lang="ts">
 import { Client } from "@/client";
 import { watch } from "vue";
@@ -49,7 +48,6 @@ function submitAction() {
 const isFormInvalid = computed(() => {
   for (let option of options.value) {
     if (!(option.opName in actionData.value)) {
-      console.log(option.opName);
       return true;
     }
   }
