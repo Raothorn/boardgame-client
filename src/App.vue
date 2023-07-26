@@ -1,20 +1,20 @@
 <template>
-    <v-app>
-        <v-main>
-            <v-container class="fill-height">
-                <v-responsive class="fill-height">
-                    <v-row>
-                        <v-col cols="8">
-                            <GameDisplay :gamestate="gamestate" />
-                        </v-col>
-                        <v-col cols="4">
-                            <ActionSelector></ActionSelector>
-                        </v-col>
-                    </v-row>
-                </v-responsive>
-            </v-container>
-        </v-main>
-    </v-app>
+  <v-app>
+    <v-main>
+      <v-container class="fill-height">
+        <v-responsive class="fill-height">
+          <v-row>
+            <v-col cols="8">
+              <GameDisplay :gamestate="gamestate" />
+            </v-col>
+            <v-col cols="4">
+              <ActionSelector></ActionSelector>
+            </v-col>
+          </v-row>
+        </v-responsive>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +28,6 @@ const client = inject<Client>("$client") as Client;
 const gamestate: Ref<object | undefined> = ref();
 
 client.$onStateUpdate((newState) => {
-    gamestate.value = newState;
+  gamestate.value = newState;
 });
 </script>

@@ -1,6 +1,10 @@
+import { useToast } from "vue-toast-notification";
+import 'vue-toast-notification/dist/theme-default.css'
+
 export class Client {
   private socket: WebSocket;
   private onStateUpdate: (gs: object) => void;
+
 
   constructor() {
     this.onStateUpdate = (gs) => {};
@@ -11,8 +15,16 @@ export class Client {
     };
 
     this.socket.onmessage = (event) => {
-      let newState = JSON.parse(event.data);
-      this.onStateUpdate(newState);
+      let msg = JSON.parse(event.data);
+      console.log(msg.msgData);
+      if(msg.msgType == "update") {
+        this.onStateUpdate(msg.msgData);
+      }
+      else if(msg.msgType == "notify") {
+        const $toast = useToast();
+        $toast.warning(msg.msgData);
+      }
+
     };
   }
 
@@ -20,10 +32,9 @@ export class Client {
     this.onStateUpdate = fn;
   }
 
-  sendMessage(msgData: object) {
-    let msg = JSON.stringify(msgData);
+  sendMessage(msgType: string, msgData: object) {
+    let msgObj = { msgType: msgType, msgData: msgData }
+    let msg = JSON.stringify(msgObj);
     this.socket.send(msg);
   }  
 }
-
-// export default { Client };
