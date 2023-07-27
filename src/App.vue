@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main >
       <Dialogs :promptId="prompt" @prompt-cleared="promptCleared"></Dialogs>
       <v-container class="fill-height">
         <v-responsive class="fill-height">
@@ -42,3 +42,10 @@ function promptCleared() {
 }
 
 </script>
+
+<style scoped>
+body {
+  overflow: hidden;
+  height: 100vh;
+}
+</style>

@@ -20,6 +20,9 @@
           >Submit Action</v-btn
         >
       </v-list-item>
+      <v-list-item>
+        <v-btn>End Turn</v-btn>
+      </v-list-item>
     </v-list>
   </v-sheet>
 </template>
@@ -44,6 +47,8 @@ function submitAction() {
   client.sendMessage("action", actionMessage);
 }
 
+function endTurn() {
+}
 
 const isFormInvalid = computed(() => {
   for (let option of options.value) {
