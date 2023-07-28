@@ -1,11 +1,10 @@
 import { useToast } from "vue-toast-notification";
-import 'vue-toast-notification/dist/theme-default.css'
+import "vue-toast-notification/dist/theme-default.css";
 
 export class Client {
   private socket: WebSocket;
   private onStateUpdate: (gs: object) => void;
-  private onPrompt: (prompt: string) => void;
-
+  private onPrompt: (prompt: PromptMsg) => void;
 
   constructor() {
     this.onStateUpdate = (_) => {};
@@ -18,14 +17,12 @@ export class Client {
 
     this.socket.onmessage = (event) => {
       let msg = JSON.parse(event.data);
-      if(msg.msgType == "update") {
+      if (msg.msgType == "update") {
         this.onStateUpdate(msg.msgData);
-      }
-      else if(msg.msgType == "notify") {
+      } else if (msg.msgType == "notify") {
         const $toast = useToast();
         $toast.warning(msg.msgData);
-      }
-      else if(msg.msgType == "prompt") {
+      } else if (msg.msgType == "prompt") {
         this.onPrompt(msg.msgData);
       }
     };
@@ -35,13 +32,15 @@ export class Client {
     this.onStateUpdate = fn;
   }
 
-  $onPrompt(fn: (prompt: string) => void) {
-    this.onPrompt=fn;
+  $onPrompt(fn: (prompt: PromptMsg) => void) {
+    this.onPrompt = fn;
   }
 
   sendMessage(msgType: string, msgData: object) {
-    let msgObj = { msgType: msgType, msgData: msgData }
+    let msgObj = { msgType: msgType, msgData: msgData };
     let msg = JSON.stringify(msgObj);
     this.socket.send(msg);
-  }  
+  }
 }
+
+export type PromptMsg = { promptType: string; promptData: object };

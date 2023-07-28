@@ -17,18 +17,18 @@
 </template>
 
 <script setup lang="ts">
-import { Client } from "@/client";
-import { onBeforeUnmount } from "vue";
-import { onMounted } from "vue";
-import { inject } from "vue";
+  import { Client } from "@/client";
+  import { onBeforeUnmount } from "vue";
+  import { onMounted } from "vue";
+  import { inject } from "vue";
 
-const props = defineProps(["gamestate"]);
+  const props = defineProps(["gamestate"]);
 
-const client = inject<Client>("$client") as Client;
+  const client = inject<Client>("$client") as Client;
 
-function restart() {
-  client.sendMessage("restart", {});
-}
+  function restart() {
+    client.sendMessage("restart", {});
+  }
 
-onBeforeUnmount(restart);
+  onBeforeUnmount(restart);
 </script>
