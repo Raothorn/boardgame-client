@@ -1,21 +1,26 @@
 <template>
-  <v-list>
-    <v-text-field
-      type="number"
-      v-model.number="crewIx"
-      label="crew_ix"
-      :disabled="decline"
-    ></v-text-field>
-    <v-text-field
-      type="number"
-      v-model.number="discardIx"
-      label="discard_ix"
-      hide-details
-      :disabled="decline"
-    ></v-text-field>
-    <v-checkbox v-model="decline" label="decline" hide-details></v-checkbox>
-    <v-btn @click="submitAction"> Submit</v-btn>
-  </v-list>
+  <v-card>
+    <v-card-title>Select Discard</v-card-title>
+    <v-card-item>
+      <v-list>
+        <v-text-field
+          type="number"
+          v-model.number="crewIx"
+          label="crew_ix"
+          :disabled="decline"
+        ></v-text-field>
+        <v-text-field
+          type="number"
+          v-model.number="discardIx"
+          label="discard_ix"
+          hide-details
+          :disabled="decline"
+        ></v-text-field>
+        <v-checkbox v-model="decline" label="decline" hide-details></v-checkbox>
+        <v-btn @click="submitAction"> Submit</v-btn>
+      </v-list>
+    </v-card-item>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -30,7 +35,6 @@ const discardIx = ref(0);
 // TODO player
 const playerIx = ref(0);
 const decline = ref(true);
-
 
 function submitAction() {
   let actionMessage = {

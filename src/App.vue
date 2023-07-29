@@ -2,12 +2,11 @@
   <v-app>
     <v-main>
       <Dialogs :current-prompt="currentPrompt"></Dialogs>
-      <!-- <Dialogs :promptId="prompt" @prompt-cleared="promptCleared"></Dialogs> -->
       <v-container class="fill-height">
         <v-responsive class="fill-height">
           <v-row>
             <v-col cols="8"> <GameDisplay :gamestate="gamestate" /> </v-col>
-            <v-col cols="4">
+            <v-col cols="auto">
               <ActionSelector></ActionSelector>
             </v-col>
           </v-row>
@@ -18,32 +17,32 @@
 </template>
 
 <script setup lang="ts">
-  import { inject } from "vue";
-  import ActionSelector from "./components/ActionSelector.vue";
-  import GameDisplay from "./components/GameDisplay.vue";
-  import { Ref, ref } from "vue";
-  import { Client, PromptMsg } from "./client";
-  import Dialogs from "./components/Dialogs.vue";
+import { computed, inject } from "vue";
+import ActionSelector from "./components/ActionSelector.vue";
+import GameDisplay from "./components/GameDisplay.vue";
+import { Ref, ref } from "vue";
+import { Client, GameState, PromptMsg } from "./client";
+import Dialogs from "./components/Dialogs.vue";
+import { provide } from "vue";
 
-  const client = inject<Client>("$client") as Client;
-  const gamestate: Ref<object | undefined> = ref();
-  const currentPrompt = ref<PromptMsg | null>(null);
+const client = inject<Client>("$client") as Client;
+const gamestate: Ref<GameState | undefined> = ref();
+provide("state", gamestate);
 
-  client.$onStateUpdate((newState) => {
-    gamestate.value = newState;
+client.$onStateUpdate((newState: GameState) => {
+  gamestate.value = newState;
+});
 
-    // If a valid state is receieved, there should be no prompt
-    currentPrompt.value = null;
-  });
+const currentPrompt = computed(() => {
+  if (gamestate.value?.prompt == null )  return undefined;
+  return gamestate.value?.prompt;
+});
 
-  client.$onPrompt((promptMsg) => {
-    currentPrompt.value = promptMsg as PromptMsg;
-  });
 </script>
 
 <style scoped>
-  body {
-    overflow: hidden;
-    height: 100vh;
-  }
+body {
+  overflow: hidden;
+  height: 100vh;
+}
 </style>

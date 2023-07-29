@@ -1,17 +1,10 @@
 <template>
   <template v-if="isPrompt">
-    <v-container>
-      <v-row>
-        <v-dialog width="unset" :model-value="isPrompt" persistent>
-          <v-card>
-            <v-card-title>Select discard</v-card-title>
-            <v-card-item>
-              <component :is="promptComponent"></component>
-            </v-card-item>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </v-container>
+    <div class="d-flex justify-center">
+      <v-dialog width="unset" :model-value="isPrompt" persistent>
+        <component :is="promptComponent"></component>
+      </v-dialog>
+    </div>
   </template>
 </template>
 
@@ -20,8 +13,12 @@ import { PromptMsg } from "@/client";
 import SelectDiscardForGalleyDialog from "./dialogs/SelectDiscardForGalleyDialog.vue";
 import { computed } from "vue";
 import { VContainer } from "vuetify/lib/components/index.mjs";
+import DrawForDeckAction from "./dialogs/DrawForDeckAction.vue";
+import ChooseTokenForDeckAction from "./dialogs/ChooseTokenForDeckAction.vue";
 
-const props = defineProps<{ currentPrompt: PromptMsg | null }>();
+const props = defineProps<{
+  currentPrompt: PromptMsg | undefined;
+}>();
 
 const promptComponent = computed(() => {
   if (props.currentPrompt == null) {
@@ -31,15 +28,14 @@ const promptComponent = computed(() => {
   switch (props.currentPrompt?.promptType) {
     case "selectDiscardForGalleyAction":
       return SelectDiscardForGalleyDialog;
+    case "drawForDeckAction":
+      return DrawForDeckAction;
+    case "chooseTokenForDeckAction":
+      return ChooseTokenForDeckAction;
     default:
       return VContainer;
   }
 });
 
-function onDialogHandled() {
-
-}
-
-const isPrompt = computed(() => props.currentPrompt != null);
-
+const isPrompt = computed(() => props.currentPrompt != undefined);
 </script>

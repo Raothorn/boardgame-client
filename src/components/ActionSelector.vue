@@ -84,7 +84,7 @@
           {
             opName: "room",
             opType: "select",
-            selectVals: ["Bridge", "Galley"],
+            selectVals: ["Bridge", "Galley", "Deck"],
           },
         ];
       default:
