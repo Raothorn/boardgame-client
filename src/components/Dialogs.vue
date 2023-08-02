@@ -15,6 +15,7 @@ import { computed } from "vue";
 import { VContainer } from "vuetify/lib/components/index.mjs";
 import DrawForDeckAction from "./dialogs/DrawForDeckAction.vue";
 import ChooseTokenForDeckAction from "./dialogs/ChooseTokenForDeckAction.vue";
+import SelectEventOption from "./dialogs/SelectEventOption.vue";
 
 const props = defineProps<{
   currentPrompt: PromptMsg | undefined;
@@ -32,6 +33,8 @@ const promptComponent = computed(() => {
       return DrawForDeckAction;
     case "chooseTokenForDeckAction":
       return ChooseTokenForDeckAction;
+    case "selectEventOption":
+      return SelectEventOption;
     default:
       return VContainer;
   }

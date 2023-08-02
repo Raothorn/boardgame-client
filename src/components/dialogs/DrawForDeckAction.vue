@@ -16,7 +16,6 @@
 <script setup lang="ts">
 import { Client, GameState } from "@/client";
 import { Ref, computed, inject } from "vue";
-import { deflateRaw } from "zlib";
 
 const gamestate = inject<Ref<GameState>>("state");
 const client = inject<Client>("$client") as Client;
@@ -27,6 +26,7 @@ const numTokensDrawn = computed(() => {
   if (
     phase == undefined ||
     typeof phase === "string" ||
+    !("ShipAction" in phase) ||
     phase.ShipAction == null ||
     !("DeckAction" in phase.ShipAction)
   ) {

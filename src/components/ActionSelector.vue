@@ -1,6 +1,6 @@
 <template>
   <v-sheet>
-    <v-select v-model="actionType" :items="['takeShipAction']" hide-details>
+    <v-select v-model="actionType" :items="['takeShipAction', 'handleEventPhaseAction']" hide-details>
     </v-select>
     <v-list>
       <v-list-item v-for="option in options" class="my-0">
@@ -87,6 +87,8 @@
             selectVals: ["Bridge", "Galley", "Deck"],
           },
         ];
+      case "handleEventPhaseAction":
+        return [];
       default:
         return [];
     }

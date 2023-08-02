@@ -17,13 +17,11 @@
 </template>
 
 <script setup lang="ts">
-  import { Client } from "@/client";
-  import { onBeforeUnmount } from "vue";
-  import { onMounted } from "vue";
+  import { Client, GameState } from "@/client";
+  import { Ref, onBeforeUnmount } from "vue";
   import { inject } from "vue";
 
-  const props = defineProps(["gamestate"]);
-
+  const gamestate = inject<Ref<GameState>>("state")
   const client = inject<Client>("$client") as Client;
 
   function restart() {

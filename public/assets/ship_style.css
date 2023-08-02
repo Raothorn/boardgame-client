@@ -1,0 +1,7 @@
+.selectedRoom {
+  fill: red !important;
+}
+
+.selectableRoom {
+	stroke: yellow !important;
+}

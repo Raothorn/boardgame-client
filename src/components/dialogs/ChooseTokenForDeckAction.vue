@@ -24,7 +24,8 @@ const tokens = computed(() => {
   if (
     phase == undefined ||
     typeof phase === "string" ||
-    !phase.ShipAction ||
+    !("ShipAction" in phase) ||
+    (phase.ShipAction == null) ||
     !("DeckAction" in phase.ShipAction)
   ) {
     return [];

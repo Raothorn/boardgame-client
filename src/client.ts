@@ -39,7 +39,7 @@ export class Client {
 export type PromptMsg = { promptType: string; promptData: object };
 
 export type GameState = {
-  phase: { ShipAction: (ShipActionSubphase | null)} | string;
+  phase: GamePhase,
   players: any[];
   crew: any[];
   resources: { coins: number; meat: number; grain: number };
@@ -47,7 +47,14 @@ export type GameState = {
   prompt: any | null;
 };
 
+export type GamePhase =
+  | { ShipAction: (ShipActionSubphase | null)}
+  | { EventPhase: (EventCard | null) };
 
 export type ShipActionSubphase =
   | { GalleyAction: { gain_phase_complete: boolean } }
   | { DeckAction: { search_tokens_drawn: number[] } };
+
+export type EventCard = { name: string, options: EventOption[] }
+
+export type EventOption = {text: string}
