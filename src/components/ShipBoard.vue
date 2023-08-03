@@ -38,7 +38,7 @@ function updatePhase(newPhase: GamePhase) {
     let roomName:string = rooms[roomId];
     let rect = ship_svg.findOne(roomId);
 
-    let listener = (e) => {
+    const listener = () => {
       selectRoom(roomName);
     };
 
@@ -48,7 +48,7 @@ function updatePhase(newPhase: GamePhase) {
     }
     else {
       rect?.removeClass("selectableRoom");
-      rect?.node.removeEventListener("click", listener);
+      rect?.node.replaceWith(rect?.node.cloneNode(true));
     }
   }
 }
@@ -91,8 +91,8 @@ function shipLoad() {
   ship_svg = SVG(svg.querySelector("#svg48"));
 
   if (gamestate != undefined) {
-    updateRooms(gamestate?.value?.room);
-    updatePhase(gamestate?.value?.phase);
+    updateRooms(gamestate?.value.room);
+    updatePhase(gamestate?.value.phase);
   }
 }
 </script>

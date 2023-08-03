@@ -41,7 +41,7 @@ export type PromptMsg = { promptType: string; promptData: object };
 export type GameState = {
   phase: GamePhase,
   players: any[];
-  crew: any[];
+  crew: Crew[];
   resources: { coins: number; meat: number; grain: number };
   room: string;
   prompt: any | null;
@@ -49,12 +49,17 @@ export type GameState = {
 
 export type GamePhase =
   | { ShipAction: (ShipActionSubphase | null)}
-  | { EventPhase: (EventCard | null) };
+  | { EventPhase: (EventCard | null) }
+  | { ChallengePhase: Challenge }
 
 export type ShipActionSubphase =
   | { GalleyAction: { gain_phase_complete: boolean } }
-  | { DeckAction: { search_tokens_drawn: number[] } };
+  | { DeckAction: { search_tokens_drawn: number[] } }
 
 export type EventCard = { name: string, options: EventOption[] }
 
 export type EventOption = {text: string}
+
+export type Challenge = { skill: string, amount: number }
+
+export type Crew = { name: string, fatigue: number, skills: any }
