@@ -17,16 +17,22 @@
 </template>
 
 <script setup lang="ts">
-  import { Client, GameState } from "@/client";
-  import { Ref, onBeforeUnmount } from "vue";
-  import { inject } from "vue";
+import { Client, GameState } from "@/client";
+import { Ref, onBeforeUnmount } from "vue";
+import { inject } from "vue";
 
-  const gamestate = inject<Ref<GameState>>("state")
-  const client = inject<Client>("$client") as Client;
+const gamestate = inject<Ref<GameState>>("state");
+const client = inject<Client>("$client") as Client;
 
-  function restart() {
-    client.sendMessage("restart", {});
-  }
+function restart() {
+  client.sendMessage("restart", {});
+}
 
-  onBeforeUnmount(restart);
+onBeforeUnmount(restart);
 </script>
+
+<style scoped>
+v-table {
+  overflow: hidden;
+}
+</style>

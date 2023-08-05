@@ -36,30 +36,27 @@ export class Client {
   }
 }
 
-export type PromptMsg = { promptType: string; promptData: object };
-
 export type GameState = {
-  phase: GamePhase,
+  phase: GamePhase;
   players: any[];
   crew: Crew[];
-  resources: { coins: number; meat: number; grain: number };
+  resources: Record<string, number>,
   room: string;
-  prompt: any | null;
 };
 
 export type GamePhase =
-  | { ShipAction: (ShipActionSubphase | null)}
-  | { EventPhase: (EventCard | null) }
-  | { ChallengePhase: Challenge }
+  | { ShipAction: ShipActionSubphase | null }
+  | { EventPhase: EventCard | null }
+  | { ChallengePhase: {challenge: Challenge, added: number | null} };
 
 export type ShipActionSubphase =
-  | { GalleyAction: { gain_phase_complete: boolean } }
   | { DeckAction: { search_tokens_drawn: number[] } }
+  | string;
 
-export type EventCard = { name: string, options: EventOption[] }
+export type EventCard = { name: string; options: EventOption[], deck_index: number };
 
-export type EventOption = {text: string}
+export type EventOption = { text: string };
 
-export type Challenge = { skill: string, amount: number }
+export type Challenge = { skill: string; amount: number };
 
-export type Crew = { name: string, fatigue: number, skills: any }
+export type Crew = { name: string; fatigue: number; damage: number; skills: Record<string, number> };

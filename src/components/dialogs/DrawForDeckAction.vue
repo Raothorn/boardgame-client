@@ -1,13 +1,27 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title><div class="d-flex justify-center">Draw search tokens</div></v-card-title>
+      <v-card-title
+        ><div class="d-flex justify-center">
+          Draw search tokens
+        </div></v-card-title
+      >
       <v-card-item>
-        <div class="d-flex justify-center"> {{ numTokensDrawn }}</div>
+        <div class="d-flex justify-center">
+          <v-chip-group v-model="tokenId">
+            <v-chip
+              v-for="(token, ix) in tokens"
+              class="mx-1"
+              :key="ix"
+              :value="token"
+            >
+              {{ token }}
+            </v-chip>
+          </v-chip-group>
+        </div>
       </v-card-item>
-      <v-card-actions>
-          <v-btn @click="draw">Draw</v-btn>
-          <v-btn @click="stopDrawing">Choose Token</v-btn>
+      <v-card-actions class="d-flex justify-center">
+        <v-btn @click="draw" variant="tonal">Draw</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -15,41 +29,42 @@
 
 <script setup lang="ts">
 import { Client, GameState } from "@/client";
-import { Ref, computed, inject } from "vue";
+import { Ref, computed, inject, ref, watch } from "vue";
 
 const gamestate = inject<Ref<GameState>>("state");
 const client = inject<Client>("$client") as Client;
+const tokenId = ref();
 
-const numTokensDrawn = computed(() => {
+const tokens = computed(() => {
   let phase = gamestate?.value?.phase;
-
   if (
     phase == undefined ||
     typeof phase === "string" ||
     !("ShipAction" in phase) ||
     phase.ShipAction == null ||
+    typeof phase.ShipAction === "string" ||
     !("DeckAction" in phase.ShipAction)
   ) {
-    return 0;
+    return [];
   }
-  return phase.ShipAction.DeckAction.search_tokens_drawn.length;
+
+  return phase.ShipAction.DeckAction.search_tokens_drawn;
 });
 
-function stopDrawing() {
+watch(tokenId, (newId) => {
   let actionMessage = {
-    actionType: "stopDrawingForDeckAction",
-    actionData: { player_ix: 0 }
+    actionType: "chooseTokenForDeckAction",
+    actionData: { player_ix: 0, token_id: newId },
   };
 
   client.sendMessage("action", actionMessage);
-}
+});
 
 function draw() {
   let actionMessage = {
     actionType: "drawForDeckAction",
-    actionData: { player_ix: 0 }
+    actionData: { player_ix: 0 },
   };
   client.sendMessage("action", actionMessage);
 }
-
 </script>

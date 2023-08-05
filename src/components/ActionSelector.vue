@@ -1,6 +1,10 @@
 <template>
   <v-sheet>
-    <v-select v-model="actionType" :items="['takeShipAction', 'handleEventPhaseAction']" hide-details>
+    <v-select
+      v-model="actionType"
+      :items="['takeShipAction', 'handleEventPhaseAction']"
+      hide-details
+    >
     </v-select>
     <v-list>
       <v-list-item v-for="option in options" class="my-0">
@@ -34,63 +38,63 @@
   </v-sheet>
 </template>
 <script setup lang="ts">
-  import { Client } from "@/client";
-  import { watch } from "vue";
-  import { ComputedRef, inject } from "vue";
-  import { Ref, computed } from "vue";
-  import { ref } from "vue";
+import { Client } from "@/client";
+import { watch } from "vue";
+import { ComputedRef, inject } from "vue";
+import { Ref, computed } from "vue";
+import { ref } from "vue";
 
-  const client = inject<Client>("$client") as Client;
-  const actionType = ref("takeShipAction");
-  const actionData: Ref<Record<string, any>> = ref({});
+const client = inject<Client>("$client") as Client;
+const actionType = ref("takeShipAction");
+const actionData: Ref<Record<string, any>> = ref({});
 
-  function submitAction() {
-    actionData.value["player_ix"] = 0;
+function submitAction() {
+  actionData.value["player_ix"] = 0;
 
-    let actionMessage = {
-      actionType: actionType.value,
-      actionData: actionData.value,
-    };
-    client.sendMessage("action", actionMessage);
-  }
+  let actionMessage = {
+    actionType: actionType.value,
+    actionData: actionData.value,
+  };
+  client.sendMessage("action", actionMessage);
+}
 
-  function endTurn() {
-    let actionMessage = {
-      actionType: "endTurnAction",
-      actionData: { player_ix: 0 },
-    };
+function endTurn() {
+  let actionMessage = {
+    actionType: "endTurnAction",
+    actionData: { player_ix: 0 },
+  };
 
-    client.sendMessage("action", actionMessage);
-  }
+  client.sendMessage("action", actionMessage);
+}
 
-  const isFormInvalid = computed(() => {
-    for (let option of options.value) {
-      if (!(option.opName in actionData.value)) {
-        return true;
-      }
+const isFormInvalid = computed(() => {
+  for (let option of options.value) {
+    if (!(option.opName in actionData.value)) {
+      return true;
     }
-    return false;
-  });
+  }
+  return false;
+});
 
-  watch(actionType, (_) => {
-    actionData.value = {};
-  });
+watch(actionType, (_) => {
+  actionData.value = {};
+});
 
-  type Option = { opName: string; opType: string; selectVals?: string[] };
-  const options: ComputedRef<Option[]> = computed(() => {
-    switch (actionType.value) {
-      case "takeShipAction":
-        return [
-          {
-            opName: "room",
-            opType: "select",
-            selectVals: ["Bridge", "Galley", "Deck"],
-          },
-        ];
-      case "handleEventPhaseAction":
-        return [];
-      default:
-        return [];
-    }
-  });
+type Option = { opName: string; opType: string; selectVals?: string[] };
+const options: ComputedRef<Option[]> = computed(() => {
+  switch (actionType.value) {
+    case "takeShipAction":
+      return [
+        {
+          opName: "room",
+          opType: "select",
+          selectVals: ["Bridge", "Galley", "Deck"],
+        },
+      ];
+    case "handleEventPhaseAction":
+      return [];
+    default:
+      return [];
+  }
+});
 </script>

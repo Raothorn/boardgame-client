@@ -1,7 +1,7 @@
 <template>
-  <template v-if="isPrompt">
+  <template v-if="promptComponent != null">
     <div class="d-flex justify-center">
-      <v-dialog width="unset" :model-value="isPrompt" persistent>
+      <v-dialog width="unset" :model-value="promptComponent != null" persistent>
         <component :is="promptComponent"></component>
       </v-dialog>
     </div>
@@ -9,39 +9,39 @@
 </template>
 
 <script setup lang="ts">
-import { PromptMsg } from "@/client";
 import SelectDiscardForGalleyDialog from "./dialogs/SelectDiscardForGalleyDialog.vue";
-import { computed } from "vue";
-import { VContainer } from "vuetify/lib/components/index.mjs";
+import { Ref, computed, inject } from "vue";
 import DrawForDeckAction from "./dialogs/DrawForDeckAction.vue";
-import ChooseTokenForDeckAction from "./dialogs/ChooseTokenForDeckAction.vue";
 import SelectEventOption from "./dialogs/SelectEventOption.vue";
-import ResolveChallenge from "./dialogs/ResolveChallenge.vue"
+import ResolveChallenge from "./dialogs/ResolveChallenge.vue";
+import { GameState } from "@/client";
 
-const props = defineProps<{
-  currentPrompt: PromptMsg | undefined;
-}>();
+const gamestate = inject<Ref<GameState>>("state");
 
 const promptComponent = computed(() => {
-  if (props.currentPrompt == null) {
-    return VContainer;
-  }
+  const phase = gamestate?.value?.phase;
 
-  switch (props.currentPrompt?.promptType) {
-    case "selectDiscardForGalleyAction":
-      return SelectDiscardForGalleyDialog;
-    case "drawForDeckAction":
+  if (phase == undefined) return null;
+
+  if ("ShipAction" in phase && phase.ShipAction != null) {
+    if (typeof phase.ShipAction === "string") {
+      if (phase.ShipAction == "GalleyAction") {
+        return SelectDiscardForGalleyDialog;
+      }
+    }
+    else if ("DeckAction" in phase.ShipAction) {
       return DrawForDeckAction;
-    case "chooseTokenForDeckAction":
-      return ChooseTokenForDeckAction;
-    case "selectEventOption":
-      return SelectEventOption;
-    case "resolveChallenge":
-      return ResolveChallenge;
-    default:
-      return VContainer;
+    }
   }
-});
+  else if ("EventPhase" in phase) {
+    if(phase.EventPhase != null) {
+      return SelectEventOption;
+    }
+  }
+  else if("ChallengePhase" in phase) {
+    return ResolveChallenge;
+  }
 
-const isPrompt = computed(() => props.currentPrompt != undefined);
+  return null;
+});
 </script>

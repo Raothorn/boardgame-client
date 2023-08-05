@@ -1,7 +1,16 @@
-.selectedRoom {
-  fill: red !important;
+.selectableRoom > rect {
+  fill: #000000  !important;
+  fill-opacity: 0 !important;
+
+  stroke: #994d00 !important;
+  stroke-width: 10 !important;
 }
 
-.selectableRoom {
-	stroke: yellow !important;
+.selectableRoom:hover > rect, .selectedRoom > rect {
+    stroke: #331a00 !important;
+	stroke-width: 15 !important;
+}
+
+.selectableRoom:hover > text, .selectedRoom > text {
+	font-size: 96px !important;
 }
