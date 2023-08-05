@@ -14,3 +14,7 @@
 .selectableRoom:hover > text, .selectedRoom > text {
 	font-size: 96px !important;
 }
+
+#rect1440 {
+	fill: #121212 !important;
+}

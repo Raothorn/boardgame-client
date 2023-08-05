@@ -1,15 +1,14 @@
 <template>
-  <object
-    id="ship_obj"
-    data="assets/ship.svg"
-    type="text/svg"
-    @load="shipLoad"
-  ></object>
-  <div>
-    <v-tooltip v-model="isSelectRoomPhase"  activator="parent" location="top center" origin="auto">
-      Select room to perform ship action
-    </v-tooltip>
-  </div>
+  <object id="ship_obj" data="assets/ship.svg" type="text/svg" @load="shipLoad">
+  </object>
+  <v-snackbar
+    v-model="isSelectRoomPhase"
+    attach="parent"
+    origin="top start"
+    contained
+  >
+    Select room to perform ship action
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
@@ -91,8 +90,8 @@ function shipLoad() {
   const svg = obj.contentDocument as Document;
 
   ship_svg = SVG(svg.querySelector("#svg48")).size("100%", "100%");
+  ship_svg.findOne("#rect1440");
 
   svg_loaded.value = true;
 }
 </script>
-

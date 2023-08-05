@@ -1,57 +1,27 @@
 <template>
-  <v-container fluid class="fill-height">
-    <v-row>
-      <v-col cols="8">
-        <div class="d-flex flex-column fill-height">
-          <div id="debug_view" class="flex-shrink-1">
-            <DebugView></DebugView>
-          </div>
-          <v-sheet class="mt-1 flex-grow-1 d-flex justify-end">
-            <v-container>
-              <v-row>
-                <v-col cols="2">
-                  <div class="d-flex flex-column align-center">
-                    <span>Coins</span>
-                    <span>{{resourceAmt("coins")}}</span>
-                  </div>
-                </v-col>
-                <v-col cols="2">
-                  <div class="d-flex flex-column align-center">
-                    <span>Meat</span>
-                    <span>{{resourceAmt("meat")}}</span>
-                  </div>
-                </v-col>
-                <v-col cols="2" class="me-auto">
-                  <div class="d-flex flex-column align-center">
-                    <span>Grain</span>
-                    <span>{{resourceAmt("grain")}}</span>
-                  </div>
-                </v-col>
-                <v-col cols="auto">
-                  <v-btn
-                    class="fill-height "
-                    variant="tonal"
-                    @click="ctxButton.click"
-                    :disabled="!ctxButton.enabled"
-                    >
-                    {{ ctxButton.text }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-sheet>
-        </div>
-      </v-col>
-      <v-col><CrewBoard></CrewBoard></v-col>
-    </v-row>
-  </v-container>
+  <div
+    class="grid"
+    data-packery='{ "itemSelector": ".grid-item", "percentPosition": true }'
+  >
+    <div class="grid-item width3 height4">
+      <div class="fill-height d-flex justify-center contains">
+        <ShipBoard></ShipBoard>
+      </div>
+    </div>
+    <div class="grid-item width2 height6">
+      <CrewBoard></CrewBoard>
+    </div>
+    <div class="grid-item width3 height2"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { Ref, computed, inject } from "vue";
 import CrewBoard from "./CrewBoard.vue";
-import DebugView from "./DebugView.vue";
+import ShipBoard from "./ShipBoard.vue";
 import { Client, GameState } from "@/client";
+import { onMounted } from "vue";
+import { Packery } from "packery";
 
 const gamestate = inject<Ref<GameState>>("state");
 const client = inject<Client>("$client") as Client;
@@ -86,7 +56,86 @@ function drawEventCardAction() {
 
   client.sendMessage("action", actionMsg);
 }
+
+onMounted(() => {
+  var grid = document.querySelector(".grid");
+
+  if (grid == null) return;
+
+  try {
+    var pckery = new Packery(grid, {
+      itemSelector: ".grid-item",
+      percentPosition: true,
+    });
+  } catch (error) {}
+});
+
 </script>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+}
+
+/* force scrollbar, prevents initial gap */
+html {
+  overflow-y: scroll;
+  height: 100%;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+.grid {
+  background: #ddd;
+  height: 100%;
+}
+
+/* clear fix */
+.grid:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* ---- .element-item ---- */
+
+/* 5 columns, percentage width */
+.grid-item {
+  float: left;
+  width: 20%;
+  height: calc(100vh / 6);
+  background-color: #121212;
+  border: 2px solid hsla(0, 0%, 0%, 0.5);
+}
+
+.width2 {
+  width: 40%;
+}
+.height2 {
+  height: calc(100vh / 3);
+}
+
+.height3 {
+  height: calc(100vh / 2);
+}
+.width3 {
+  width: 60%;
+}
+
+.height4 {
+  height: calc(100vh / (6 / 4));
+}
+.width4 {
+  width: 80%;
+}
+
+.height6 {
+  height: 100vh;
+}
+
+.contains {
+  overflow: hidden;
+}
 </style>

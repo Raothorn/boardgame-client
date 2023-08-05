@@ -9,6 +9,7 @@
   "dependencies": {
     "@mdi/font": "7.0.96",
     "@svgdotjs/svg.js": "^3.2.0",
+    "packery": "^2.1.2",
     "roboto-fontface": "*",
     "vue": "^3.2.0",
     "vue-toast-notification": "^3.1.1",
@@ -18,6 +19,7 @@
   "devDependencies": {
     "@babel/types": "^7.21.4",
     "@types/node": "^18.15.0",
+    "@types/packery": "^1.4.33",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^4.0.0",
     "node-sass": "^9.0.0",
