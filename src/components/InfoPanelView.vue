@@ -8,7 +8,7 @@
           </v-virtual-scroll>
         </v-col>
         <v-col>
-          <v-btn class="w-100 h-100"> action </v-btn>
+          <v-btn class="w-100 h-100" @click="drawEventCard"> action </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -16,21 +16,21 @@
 </template>
 
 <script setup lang="ts">
+import { inject, Ref, ref } from "vue";
+import { Client, GameState } from "@/client";
+
+const client = inject<Client>("$client") as Client;
+const gamestate: Ref<GameState | undefined> = ref();
+
+function drawEventCard() {
+  let actionMsg = {
+    actionType: "handleEventPhaseAction",
+    actionData: {}
+  };
+  client.sendMessage("action", actionMsg)
+}
+
 const messages = [
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
-  "helelo",
   "helelo",
   "test",
 ];

@@ -1,5 +1,6 @@
 <template>
   <v-app class="fill-height">
+    <Dialogs></Dialogs>
     <v-sheet class="fill-height" color="background">
       <v-card id="shipboard" class="left-col top-row" color="grey-darken-4" rounded>
         <ShipBoard></ShipBoard>
@@ -23,6 +24,7 @@ import { provide } from "vue";
 import SelectionInfoPanel from './components/SelectionInfoPanel.vue'
 import ShipBoard from "./components/ShipBoard.vue";
 import CrewBoard from "./components/CrewBoard.vue"
+import Dialogs from "./components/Dialogs.vue";
 import InfoPanelView from "./components/InfoPanelView.vue";
 
 const client = inject<Client>("$client") as Client;
