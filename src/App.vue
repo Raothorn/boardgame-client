@@ -2,9 +2,9 @@
   <v-app class="fill-height">
     <Dialogs></Dialogs>
     <v-sheet class="fill-height" color="background">
-      <v-card id="shipboard" class="left-col top-row" color="grey-darken-4" rounded>
-        <ShipBoard></ShipBoard>
-      </v-card>
+      <v-sheet id="shipboard" class="left-col top-row" color="grey-darken-4" rounded>
+        <MainActionPanel></MainActionPanel>
+      </v-sheet>
       <v-card id="infopanel" class="left-col bottom-row">
         <InfoPanelView></InfoPanelView>
       </v-card>
@@ -26,6 +26,7 @@ import ShipBoard from "./components/ShipBoard.vue";
 import CrewBoard from "./components/CrewBoard.vue"
 import Dialogs from "./components/Dialogs.vue";
 import InfoPanelView from "./components/InfoPanelView.vue";
+import MainActionPanel from "./components/MainActionPanel.vue";
 
 const client = inject<Client>("$client") as Client;
 const gamestate: Ref<GameState | undefined> = ref();
