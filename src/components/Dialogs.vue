@@ -29,7 +29,7 @@ const message = computed(() => {
     return null;
 
   let result = gamestate.value.message_queue.pop();
-  console.log(result)
+
   return result;
 });
 

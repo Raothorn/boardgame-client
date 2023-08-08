@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { Client, ClientMessage } from "@/client";
 import { inject } from "vue";
-import { useMessageLogStore } from "@/stores/MessageLog";
+import useMessageLogStore from "@/stores/MessageLog"
 
 const client = inject<Client>("$client") as Client;
 const messageLog = useMessageLogStore();

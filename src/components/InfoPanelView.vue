@@ -3,18 +3,19 @@
     <v-container>
       <v-row>
         <v-col cols="10">
-          <v-virtual-scroll class="message_scroll" :items="messages">
-            <template v-slot:default="{ item }">Item {{ item }}</template>
+          <v-virtual-scroll class="message_scroll" :items="messageLog.messages">
+            <template v-slot:default="{ item }">> {{ item }}</template>
           </v-virtual-scroll>
         </v-col>
-        <v-col>
+        <v-col class="mx-auto">
           <v-btn
             class="w-100 h-100"
-            @click="drawEventCard"
+            @click="actionButton.click"
             variant="tonal"
+            :disabled="actionButton.disabled"
             color="primary"
           >
-            action
+            {{actionButton.text}}
           </v-btn>
         </v-col>
       </v-row>
@@ -23,11 +24,25 @@
 </template>
 
 <script setup lang="ts">
-import { inject, Ref, ref } from "vue";
+import { computed, inject, Ref, ref } from "vue";
 import { Client, GameState } from "@/client";
+import useMessageLogStore from "@/stores/MessageLog";
 
-const client = inject<Client>("$client") as Client;
-const gamestate: Ref<GameState | undefined> = ref();
+const client = inject<Client>("$client");
+const gamestate = inject<GameState>("state");
+const messageLog = useMessageLogStore();
+
+const actionButton = computed(() => {
+  let button = { disabled: true, text: "", click: () => {} };
+
+  let phase = gamestate?.value?.phase;
+  if (phase != undefined && "EventPhase" in phase && phase.EventPhase == null) {
+    button = { disabled: false, text: "Draw Event", click: drawEventCard}
+  }
+
+  console.log(button);
+  return button;
+});
 
 function drawEventCard() {
   let actionMsg = {
@@ -36,16 +51,6 @@ function drawEventCard() {
   };
   client.sendMessage("action", actionMsg);
 }
-
-const messages = [
-"helelo", "test",
-"helelo", "test",
-"helelo", "test",
-"helelo", "test",
-"helelo", "test",
-"helelo", "test",
-"helelo", "test",
-];
 </script>
 
 <style scoped>

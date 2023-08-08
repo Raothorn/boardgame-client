@@ -21,3 +21,5 @@ export const useMessageLogStore = defineStore('messageLog', () => {
 
   return {messages, logMessage}
 });
+
+export default useMessageLogStore
