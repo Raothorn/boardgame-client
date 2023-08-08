@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
+<?xml-stylesheet href="ship_style.css" type="text/css"?>
 <svg
    version="1.1"
    id="svg48"
-   width="2747.314"
-   height="1566.9697"
-   viewBox="0 0 2746.7158 1566.9697"
+   width="3061.3333"
+   height="1568"
+   viewBox="0 0 3060.6667 1568"
    xml:space="preserve"
    preserveAspectRatio="none"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs52"><clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath1"><path
-         style="display:inline;fill:none;stroke:#000000;stroke-width:8"
-         d="M 2.8376199,952.85746 165.37853,167.4965 237.53212,42.907213 343.31739,1.0303198 H 2744.3922 l 96.6818,35.9179732 68.4218,114.667677 153.0824,732.5489 -2.2029,686.03673 H 2.1706072 Z"
-         id="path1" /></clipPath></defs><g
-     id="g54"
-     style="display:inline;fill:url(#cloth_bitmap);fill-opacity:1"
-     transform="matrix(0.89786512,0,0,1,-1.9489124,-1.0303198)"><image
-       width="3060"
-       height="1568"
-       preserveAspectRatio="none"
-       xlink:href="../../../../../../assets/ship.png"
-       id="image56"
-       style="display:inline;opacity:1;fill:url(#cloth_bitmap);fill-opacity:1"
-       clip-path="url(#clipPath1)"
-       x="1.3336238"
-       y="0" /></g><g
+     id="defs52" /><rect
+     style="fill:#0c0c0c;fill-opacity:1;stroke:#765c01;stroke-width:7.99913"
+     id="rect1"
+     width="3471.8071"
+     height="2199.2815"
+     x="-142.51842"
+     y="-236.68503"
+     ry="16.551285" /><image
+     width="3060.6667"
+     height="1568"
+     preserveAspectRatio="none"
+     xlink:href="/assets/ship.png"
+     id="image1"
+     x="0"
+     y="0" /><g
      id="layer1"
      style="display:inline"
-     transform="translate(-2.1706071,-1.0303198)"><g
+     transform="translate(-2.954543,-1.2989908)"><g
        id="layer2"
        style="display:inline;image-rendering:auto"><g
          id="bridge"><rect
@@ -44,7 +42,7 @@
            y="385.50397"
            ry="3.8782814" /><text
            xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:85.3333px;font-family:serif;-inkscape-font-specification:'serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;inline-size:531.568;display:inline;fill:#2b1100;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:85.3333px;font-family:serif;-inkscape-font-specification:'serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;inline-size:531.568;fill:#2b1100;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
            x="1685.7028"
            y="444.01669"
            id="text3161"

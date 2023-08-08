@@ -1,69 +1,83 @@
 <template>
   <v-sheet class="fill-height">
-    <VSplit :split="70">
-      <template #first>
-        <v-card id="crew_card" class="fill-height w-100" border>
-          <v-list class="fill-height d-flex flex-column justify-start">
-            <v-list-item
-              v-for="(crew_member, ix) in crew"
-              @click="selectedCrewIx = ix"
-            >
-              <v-sheet :elevation="24" border rounded color="grey-darken-3" class="py-auto">
-                <v-container fluid class="py-0">
-                  <v-row class="d-flex justify-start align-center">
-                    <v-col cols="4">
-                      <v-card-item>
-                        <h4 v-if="$vuetify.display.mdAndUp">
-                          {{ crew_member.name.split(" ")[0] }}
-                        </h4>
-                      </v-card-item>
-                    </v-col>
-                    <v-divider :vertical="true"></v-divider>
-                    <v-col>
-                      <div class="d-flex justify-start">
-                        <template v-for="(amount, name) in crew_member.skills">
-                          <span v-if="amount > 0">
-                            <component
-                              class="mx-1"
-                              :is="skillIcon(name)"
-                            ></component>
-                          </span>
-                          <span v-if="amount > 1">x{{ amount }}</span>
-                        </template>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-sheet>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </template>
-      <template #second>
-        <template v-if="selectedCrew != undefined">
-          <v-card border class="w-100">
-            <v-card-title class="d-flex justify-center">
-              {{ selectedCrew.name }}
-            </v-card-title>
-            <v-card-item>
-              <v-table class="rounded">
-                <tbody>
-                  <tr>
-                    <td>Damage</td>
-                    <td>{{ selectedCrew.damage }}</td>
-                  </tr>
-                  <tr>
-                    <td>Fatigue</td>
-                    <td>{{ selectedCrew.fatigue }}</td>
-                  </tr>
-                </tbody>
-              </v-table>
-            </v-card-item>
-          </v-card>
-        </template>
-      </template>
-    </VSplit>
+    <v-card id="crew_card" class="fill-height w-100" border>
+      <v-list class="fill-height d-flex flex-column justify-start">
+        <v-list-item
+          v-for="(crew_member, ix) in crew"
+          @click="selectedCrewIx = ix"
+        >
+          <template v-if="$vuetify.display.width > 1350">
+            <v-sheet border rounded color="grey-darken-3" class="py-auto">
+              <v-container fluid class="py-0">
+                <v-row class="d-flex justify-start align-center">
+                  <v-col cols="4">
+                    <v-card-item>
+                      <h4 v-if="$vuetify.display.mdAndUp">
+                        {{ crew_member.name.split(" ")[0] }}
+                      </h4>
+                    </v-card-item>
+                  </v-col>
+                  <v-divider :vertical="true"></v-divider>
+                  <v-col>
+                    <div class="d-flex justify-start">
+                      <template v-for="(amount, name) in crew_member.skills">
+                        <span v-if="amount > 0">
+                          <component
+                            class="mx-1"
+                            :is="skillIcon(name)"
+                          ></component>
+                        </span>
+                        <span v-if="amount > 1">x{{ amount }}</span>
+                      </template>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-sheet>
+          </template>
+          <template v-else>
+            <v-sheet class="d-flex justify-start">
+              {{ crew_member.name.split(" ")[0] }}
+              <template v-for="(amount, name) in crew_member.skills">
+                <span v-if="amount > 0">
+                  <component class="mx-1" :is="skillIcon(name)"></component>
+                </span>
+                <span v-if="amount > 1">x{{ amount }}</span>
+              </template>
+            </v-sheet>
+          </template>
+        </v-list-item>
+      </v-list>
+    </v-card>
   </v-sheet>
+  <!--   <VSplit :split="70"> -->
+  <!--     <template #first> -->
+  <!--     </template> -->
+  <!--     <template #second> -->
+  <!--       <template v-if="selectedCrew != undefined"> -->
+  <!--         <v-card border class="w-100"> -->
+  <!--           <v-card-title class="d-flex justify-center"> -->
+  <!--             {{ selectedCrew.name }} -->
+  <!--           </v-card-title> -->
+  <!--           <v-card-item> -->
+  <!--             <v-table class="rounded"> -->
+  <!--               <tbody> -->
+  <!--                 <tr> -->
+  <!--                   <td>Damage</td> -->
+  <!--                   <td>{{ selectedCrew.damage }}</td> -->
+  <!--                 </tr> -->
+  <!--                 <tr> -->
+  <!--                   <td>Fatigue</td> -->
+  <!--                   <td>{{ selectedCrew.fatigue }}</td> -->
+  <!--                 </tr> -->
+  <!--               </tbody> -->
+  <!--             </v-table> -->
+  <!--           </v-card-item> -->
+  <!--         </v-card> -->
+  <!--       </template> -->
+  <!--     </template> -->
+  <!--   </VSplit> -->
+  <!-- </v-sheet> -->
 </template>
 
 <script setup lang="ts">

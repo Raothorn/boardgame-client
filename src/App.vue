@@ -1,18 +1,26 @@
 <template>
   <v-app class="fill-height">
-      <v-sheet id="shipboard">
+    <v-sheet class="fill-height" color="background">
+      <v-card id="shipboard" class="left-col top-row" color="grey-darken-4" rounded>
         <ShipBoard></ShipBoard>
-      </v-sheet>
-      <div id="infopanel">
+      </v-card>
+      <v-card id="infopanel" class="left-col bottom-row">
         <InfoPanelView></InfoPanelView>
-      </div>
+      </v-card>
+      <v-sheet id="crewpanel" class="right-col top-row">
+        <CrewBoard></CrewBoard>
+      </v-sheet>
+      <v-sheet id="selectionPanel" class="right-col bottom-row">
+        <SelectionInfoPanel></SelectionInfoPanel>
+      </v-sheet>
+    </v-sheet>
   </v-app>
 </template>
 <script setup lang="ts">
 import { Ref, inject, ref } from "vue";
 import { Client, GameState } from "./client";
 import { provide } from "vue";
-import Game from "./components/Game.vue";
+import SelectionInfoPanel from './components/SelectionInfoPanel.vue'
 import ShipBoard from "./components/ShipBoard.vue";
 import CrewBoard from "./components/CrewBoard.vue"
 import InfoPanelView from "./components/InfoPanelView.vue";
@@ -28,11 +36,9 @@ client.$onStateUpdate((newState: GameState) => {
 
 </script>
 
-<style>
+<style scoped>
 * { box-sizing: border-box; }
-/* <!-- * { --> */
-/* <!--   box-sizing: border-box; --> */
-/* <!-- } --> */
+
 html {
   overflow-y: hidden;
   height: 100vh;
@@ -42,19 +48,26 @@ body {
   height: 100vh
 }
 
-#shipboard {
-  width: 75vw;
-  height: 80vh;
+#shipboard, #infopanel, #crewpanel, #selectionPanel {
   position: absolute;
-  background-color: black;
   overflow: hidden;
 }
 
-#infopanel {
-  width:75vw;
-  height: 20vh;
-  position: absolute;
-  top: 80vh;
-  overflow: hidden;
+.top-row {
+  height: 70vh;
+}
+
+.bottom-row {
+  top: calc(70vh + 4px);
+  height: calc(30vh - 4px);
+}
+
+.left-col {
+  width: 70vw;
+}
+
+.right-col {
+  left: calc(70vw + 4px);
+  width: calc(30vw - 4px);
 }
 </style>

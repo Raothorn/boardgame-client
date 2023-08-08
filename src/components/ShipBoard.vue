@@ -99,30 +99,19 @@ function shipLoad() {
 
   ship_svg = SVG(svg.querySelector("#svg48"));
   svg_loaded.value = true;
+  resize();
+
+  function resize ()  {
     let height = document.getElementById("ship_board")?.offsetHeight;
     height = (height == undefined) ? 0 : height;
 
     let width = document.getElementById("ship_board")?.offsetWidth;
 
     width = (width == undefined) ? 0 : width;
+    ship_svg.size(width, height);
+  }
 
-    ship_svg.size(width, height)
-
-  window.addEventListener('resize', () => {
-    let height = document.getElementById("ship_board")?.offsetHeight;
-    height = (height == undefined) ? 0 : height;
-
-    let width = document.getElementById("ship_board")?.offsetWidth;
-
-    width = (width == undefined) ? 0 : width;
-    ship_svg.size(width, height)
-    console.log("resize")
-
-  })
-
-
-
-
+  window.addEventListener('resize', resize);
 }
 </script>
 
