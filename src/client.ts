@@ -50,7 +50,8 @@ export type GameState = {
 export type GamePhase =
   | { ShipActionPhase: ShipActionSubphase | null }
   | { EventPhase: EventCard | null }
-  | { ChallengePhase: { challenge: Challenge; added: number | null } };
+  | { ChallengePhase: { challenge: Challenge; added: number | null } }
+  | { MainActionPhase: any[] }
 
 export type ShipActionSubphase =
   | { DeckAction: { search_tokens_drawn: number[] } }
