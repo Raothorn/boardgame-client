@@ -1,12 +1,15 @@
 <template>
   <v-sheet class="fill-height">
-    <v-container fluid>
-      <v-row class="mb-1">
-        <v-card id="crew_card" class="w-100" border>
-          <v-list>
-            <v-list-item v-for="(crew_member, ix) in crew" @click="selectedCrewIx = ix">
-              <v-sheet :elevation="24" border rounded color="grey-darken-3">
-                <v-container v-if="$vuetify.display.lgAndUp" fluid class="py-0">
+    <VSplit :split="70">
+      <template #first>
+        <v-card id="crew_card" class="fill-height w-100" border>
+          <v-list class="fill-height d-flex flex-column justify-start">
+            <v-list-item
+              v-for="(crew_member, ix) in crew"
+              @click="selectedCrewIx = ix"
+            >
+              <v-sheet :elevation="24" border rounded color="grey-darken-3" class="py-auto">
+                <v-container fluid class="py-0">
                   <v-row class="d-flex justify-start align-center">
                     <v-col cols="4">
                       <v-card-item>
@@ -20,44 +23,46 @@
                       <div class="d-flex justify-start">
                         <template v-for="(amount, name) in crew_member.skills">
                           <span v-if="amount > 0">
-                            <component class="mx-1" :is="skillIcon(name)"></component>
+                            <component
+                              class="mx-1"
+                              :is="skillIcon(name)"
+                            ></component>
                           </span>
-                          <span v-if="amount > 1"> x{{amount}}</span>
+                          <span v-if="amount > 1">x{{ amount }}</span>
                         </template>
                       </div>
                     </v-col>
                   </v-row>
                 </v-container>
-                <template v-else>
-                  {{ crew_member.name }}
-                </template>
               </v-sheet>
             </v-list-item>
           </v-list>
         </v-card>
-      </v-row>
-      <v-row v-if="selectedCrew != undefined" class="fill-height" disabled="true">
-        <v-card border class="w-100">
-          <v-card-title class="d-flex justify-center">
+      </template>
+      <template #second>
+        <template v-if="selectedCrew != undefined">
+          <v-card border class="w-100">
+            <v-card-title class="d-flex justify-center">
               {{ selectedCrew.name }}
-          </v-card-title>
-          <v-card-item>
-            <v-table class="rounded">
-              <tbody>
-                <tr>
-                  <td>Damage</td>
-                  <td>{{ selectedCrew.damage }}</td>
-                </tr>
-                <tr>
-                  <td>Fatigue</td>
-                  <td>{{ selectedCrew.fatigue }}</td>
-                </tr>
-              </tbody>
-            </v-table>
-          </v-card-item>
-        </v-card>
-      </v-row>
-    </v-container>
+            </v-card-title>
+            <v-card-item>
+              <v-table class="rounded">
+                <tbody>
+                  <tr>
+                    <td>Damage</td>
+                    <td>{{ selectedCrew.damage }}</td>
+                  </tr>
+                  <tr>
+                    <td>Fatigue</td>
+                    <td>{{ selectedCrew.fatigue }}</td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card-item>
+          </v-card>
+        </template>
+      </template>
+    </VSplit>
   </v-sheet>
 </template>
 
@@ -70,6 +75,7 @@ import StrengthIcon from "./icons/StrengthIcon.vue";
 import PerceptionIcon from "./icons/PerceptionIcon.vue";
 import WitsIcon from "./icons/WitsIcon.vue";
 import { VContainer } from "vuetify/lib/components/index.mjs";
+import VSplit from "./VSplit.vue";
 
 const gamestate = inject<Ref<GameState>>("state");
 const client = inject<Client>("$client") as Client;
@@ -102,7 +108,7 @@ function skillIcon(name: string) {
 
 <style scoped>
 #crew_card {
-  height: 400px;
+  /* height: 400px; */
   overflow-y: auto;
 }
 </style>

@@ -1,14 +1,22 @@
 <template>
-  <object id="ship_obj" data="assets/ship.svg" type="text/svg" @load="shipLoad">
-  </object>
-  <v-snackbar
-    v-model="isSelectRoomPhase"
-    attach="parent"
-    origin="top start"
-    contained
-  >
-    Select room to perform ship action
-  </v-snackbar>
+  <v-sheet id="ship_board" class="d-flex flex-column justify-center fill-height">
+    <div id="ship_container" style="position: relative">
+      <object
+        id="ship_obj"
+        data="assets/ship.svg"
+        type="text/svg"
+        @load="shipLoad"
+      ></object>
+      <v-snackbar
+        :model-value="isSelectRoomPhase"
+        location="bottom center"
+        origin="overlap"
+        contained
+      >
+        Select room to perform ship action
+      </v-snackbar>
+    </div>
+  </v-sheet>
 </template>
 
 <script setup lang="ts">
@@ -89,9 +97,34 @@ function shipLoad() {
   const obj = document.querySelector("#ship_obj") as any;
   const svg = obj.contentDocument as Document;
 
-  ship_svg = SVG(svg.querySelector("#svg48")).size("100%", "100%");
-  ship_svg.findOne("#rect1440");
-
+  ship_svg = SVG(svg.querySelector("#svg48"));
   svg_loaded.value = true;
+    let height = document.getElementById("ship_board")?.offsetHeight;
+    height = (height == undefined) ? 0 : height;
+
+    let width = document.getElementById("ship_board")?.offsetWidth;
+
+    width = (width == undefined) ? 0 : width;
+
+    ship_svg.size(width, height)
+
+  window.addEventListener('resize', () => {
+    let height = document.getElementById("ship_board")?.offsetHeight;
+    height = (height == undefined) ? 0 : height;
+
+    let width = document.getElementById("ship_board")?.offsetWidth;
+
+    width = (width == undefined) ? 0 : width;
+    ship_svg.size(width, height)
+    console.log("resize")
+
+  })
+
+
+
+
 }
 </script>
+
+<style>
+</style>
