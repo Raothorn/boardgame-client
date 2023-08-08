@@ -11,7 +11,7 @@
 
 
       <v-window-item class="fill-height" value="map">
-          <Map class="fill-height"></Map>
+          <Map class="fill-height" :highlight-areas="false"></Map>
       </v-window-item>
     </v-window>
 

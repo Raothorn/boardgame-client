@@ -13,7 +13,10 @@
 import { SVG, Element, Path, Svg,  } from "@svgdotjs/svg.js";
 import { ref } from "vue";
 
+const props = defineProps<{highlightAreas: boolean}>();
+
 var mapSvg: Svg;
+var ship: Element;
 var mapHeight: number;
 
 const svg_loaded = ref(false);
@@ -21,6 +24,9 @@ const svg_loaded = ref(false);
 var dragY: number | null = null;
 
 function mapLoad() {
+
+
+
   const obj = document.querySelector("#map_obj") as any;
   const svg = obj.contentDocument as Document;
   let mapContainer = document.getElementById("map_container");
@@ -62,13 +68,28 @@ function mapLoad() {
   mapSvg.mousemove(onMouseMove);
   mapSvg.mouseleave(onMouseUp);
 
+  // Ship setup
+  ship = mapSvg.findOne("#ship") as Element;
+
+  // Highlight regions
+  if (props.highlightAreas) {
+    console.log("highlighting")
+    let areas = ["#area1", "#area2"];
+
+    for (let areaId of areas) {
+      let area = mapSvg.findOne(areaId);
+      area?.addClass("available");
+    }
+
+
+  }
+
 }
 
 function animateShip() {
-  let dot = mapSvg.findOne("#ship") as Element;
   let path = mapSvg.findOne("#path1") as Path;
 
-  if (path == null || dot == null) return;
+  if (path == null || ship == null) return;
 
   let pathLength = path.length();
 
@@ -76,7 +97,7 @@ function animateShip() {
 
   const scale = 4;
   const invScale = 1 / 4;
-  dot.move(pt0.x, pt0.y).scale(scale);
+  ship.move(pt0.x, pt0.y).scale(scale);
 
   let t = 0;
   let handle = setInterval(() => {
@@ -91,17 +112,18 @@ function animateShip() {
     let angle = Math.atan2(dy,dx) * (180 / Math.PI);
     console.log(angle);
 
-    let oldAngle = dot.transform().rotate;
+    let oldAngle = ship.transform().rotate;
     console.log(oldAngle)
 
 
     if (oldAngle != null) {
-      dot.rotate(-oldAngle)
+      ship.rotate(-oldAngle)
         .scale(invScale)
         .move(point.x, point.y)
         .scale(scale)
         .rotate(angle);
     }
+
     // dot.transform({relative: [point.x, point.y], scale: [1.4, 1.4]})
 
 

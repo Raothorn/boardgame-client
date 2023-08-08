@@ -1,0 +1,7 @@
+.available {
+	opacity: 0.25 !important;
+}
+
+.available:hover {
+	opacity: 0.5 !important;
+}
