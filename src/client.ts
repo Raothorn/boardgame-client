@@ -40,23 +40,39 @@ export type GameState = {
   phase: GamePhase;
   players: any[];
   crew: Crew[];
-  resources: Record<string, number>,
+  resources: Record<string, number>;
   room: string;
+  message_queue: ClientMessage[];
 };
 
 export type GamePhase =
   | { ShipAction: ShipActionSubphase | null }
   | { EventPhase: EventCard | null }
-  | { ChallengePhase: {challenge: Challenge, added: number | null} };
+  | { ChallengePhase: { challenge: Challenge; added: number | null } };
 
 export type ShipActionSubphase =
   | { DeckAction: { search_tokens_drawn: number[] } }
   | string;
 
-export type EventCard = { name: string; options: EventOption[], deck_index: number };
+export type EventCard = {
+  name: string;
+  options: EventOption[];
+  deck_index: number;
+};
 
 export type EventOption = { text: string };
 
 export type Challenge = { skill: string; amount: number };
 
-export type Crew = { name: string; fatigue: number; damage: number; skills: Record<string, number> };
+export type Crew = {
+  name: string;
+  fatigue: number;
+  damage: number;
+  skills: Record<string, number>;
+};
+
+export type ClientMessage =
+  | { GainCommandPoints: { amount: number } }
+  | { DrewAbilityCard: { card: AbilityCard } };
+
+export type AbilityCard = { name: string, deck_ix: number }

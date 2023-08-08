@@ -114,6 +114,3 @@ function shipLoad() {
   window.addEventListener('resize', resize);
 }
 </script>
-
-<style>
-</style>

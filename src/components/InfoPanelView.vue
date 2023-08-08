@@ -8,7 +8,14 @@
           </v-virtual-scroll>
         </v-col>
         <v-col>
-          <v-btn class="w-100 h-100" @click="drawEventCard"> action </v-btn>
+          <v-btn
+            class="w-100 h-100"
+            @click="drawEventCard"
+            variant="tonal"
+            color="primary"
+          >
+            action
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -25,14 +32,19 @@ const gamestate: Ref<GameState | undefined> = ref();
 function drawEventCard() {
   let actionMsg = {
     actionType: "handleEventPhaseAction",
-    actionData: {}
+    actionData: {},
   };
-  client.sendMessage("action", actionMsg)
+  client.sendMessage("action", actionMsg);
 }
 
 const messages = [
-  "helelo",
-  "test",
+"helelo", "test",
+"helelo", "test",
+"helelo", "test",
+"helelo", "test",
+"helelo", "test",
+"helelo", "test",
+"helelo", "test",
 ];
 </script>
 
