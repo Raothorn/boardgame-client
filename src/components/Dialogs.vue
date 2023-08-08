@@ -38,12 +38,12 @@ const promptComponent = computed(() => {
 
   if (phase == undefined || gamestate == undefined) return null;
 
-  if ("ShipAction" in phase && phase.ShipAction != null) {
-    if (typeof phase.ShipAction === "string") {
-      if (phase.ShipAction == "GalleyAction") {
+  if ("ShipActionPhase" in phase && phase.ShipActionPhase != null) {
+    if (typeof phase.ShipActionPhase === "string") {
+      if (phase.ShipActionPhase == "GalleyAction") {
         return SelectDiscardForGalleyDialog;
       }
-    } else if ("DeckAction" in phase.ShipAction) {
+    } else if ("DeckAction" in phase.ShipActionPhase) {
       return DrawForDeckAction;
     }
   } else if ("EventPhase" in phase) {

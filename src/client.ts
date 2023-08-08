@@ -9,7 +9,7 @@ export class Client {
     this.onStateUpdate = (_) => {};
     this.socket = new WebSocket("ws://localhost:2000/");
 
-    this.socket.onopen = (event) => {
+    this.socket.onopen = (_) => {
       console.log("connected");
     };
 
@@ -36,6 +36,8 @@ export class Client {
   }
 }
 
+export default Client
+
 export type GameState = {
   phase: GamePhase;
   players: any[];
@@ -46,13 +48,12 @@ export type GameState = {
 };
 
 export type GamePhase =
-  | { ShipAction: ShipActionSubphase | null }
+  | { ShipActionPhase: ShipActionSubphase | null }
   | { EventPhase: EventCard | null }
   | { ChallengePhase: { challenge: Challenge; added: number | null } };
 
 export type ShipActionSubphase =
   | { DeckAction: { search_tokens_drawn: number[] } }
-  | string;
 
 export type EventCard = {
   name: string;

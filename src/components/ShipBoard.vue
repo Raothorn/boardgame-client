@@ -43,7 +43,7 @@ const rooms: Record<string, string> = {
 const isSelectRoomPhase = computed(() => {
   let phase = gamestate?.value?.phase;
   return (
-    phase != undefined && "ShipAction" in phase && phase.ShipAction == null
+    phase != undefined && "ShipActionPhase" in phase && phase.ShipActionPhase == null
   );
 });
 

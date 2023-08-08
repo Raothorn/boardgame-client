@@ -40,15 +40,15 @@ const tokens = computed(() => {
   if (
     phase == undefined ||
     typeof phase === "string" ||
-    !("ShipAction" in phase) ||
-    phase.ShipAction == null ||
-    typeof phase.ShipAction === "string" ||
-    !("DeckAction" in phase.ShipAction)
+    !("ShipActionPhase" in phase) ||
+    phase.ShipActionPhase == null ||
+    typeof phase.ShipActionPhase === "string" ||
+    !("DeckAction" in phase.ShipActionPhase)
   ) {
     return [];
   }
 
-  return phase.ShipAction.DeckAction.search_tokens_drawn;
+  return phase.ShipActionPhase.DeckAction.search_tokens_drawn;
 });
 
 watch(tokenId, (newId) => {

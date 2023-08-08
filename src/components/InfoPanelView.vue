@@ -28,8 +28,8 @@ import { computed, inject, Ref, ref } from "vue";
 import { Client, GameState } from "@/client";
 import useMessageLogStore from "@/stores/MessageLog";
 
-const client = inject<Client>("$client");
-const gamestate = inject<GameState>("state");
+const client = inject<Client>("$client") as Client;
+const gamestate = inject<Ref<GameState>>("state");
 const messageLog = useMessageLogStore();
 
 const actionButton = computed(() => {
