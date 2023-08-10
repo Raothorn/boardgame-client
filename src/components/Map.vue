@@ -12,12 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import Client, { GameState } from "@/client";
+import useClient from "@/stores/ClientState";
 import { SVG, Element, Path, Svg, Matrix, Point } from "@svgdotjs/svg.js";
-import { Ref, computed, inject, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
-const gamestate = inject<Ref<GameState>>("state");
-const client = inject<Client>("$client") as Client;
+const client = useClient();
 
 var mapSvg: Svg;
 var ship: Element;
@@ -25,31 +24,24 @@ var mapHeight: number;
 
 const svg_loaded = ref(false);
 
-var dragY: number | null = null;
 
 // Computed Properties
 
 const shouldHighlightAreas = computed(() => {
-  if (!gamestate?.value) return false;
-
-  let phase = gamestate.value.phase;
+  let phase = client.gamestate.phase;
   return "MainActionPhase" in phase;
 })
 
 const svg_source = computed(() => {
-  if (!gamestate?.value) return "";
-
-  let region = gamestate.value.map.current_region;
+  let region = client.gamestate.map.current_region;
   return `assets/maps/region${region}.svg`
 });
 
 // Watchers
 watch(
-  () => gamestate?.value?.map.ship_area,
+  () => client.gamestate.map.ship_area,
   (oldArea, newArea) => {
-    if (oldArea && newArea) {
-      animateShip(oldArea, newArea, highlightAreas);
-    }
+    animateShip(oldArea, newArea, highlightAreas);
   },
 );
 
@@ -72,6 +64,7 @@ function mapLoad() {
   mapSvg.viewbox(0, 0, originalWidth, mapContainer.offsetHeight * scaleY);
 
   // Handle mouse drag
+  var dragY: number | null = null;
   function onMouseDown(e: MouseEvent) {
     dragY = e.pageY;
   }
@@ -108,10 +101,11 @@ function mapLoad() {
 }
 
 function highlightAreas() {
-  if (!shouldHighlightAreas.value || !gamestate || !gamestate.value) return;
+  if (!shouldHighlightAreas) return;
 
-  let visibleAreas = gamestate.value.map.visible_areas;
-  let adjacentAreas = gamestate.value.map.adjacent_areas;
+  let map = client.gamestate.map;
+  let visibleAreas = map.visible_areas;
+  let adjacentAreas = map.adjacent_areas;
 
   let areas: [number, string][] = visibleAreas.map((a) => [a, `#area${a}`]);
 
@@ -167,7 +161,6 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
   if (rootTransform.scaleX && rootTransform.scaleY) {
     let dp = new Point(dt / rootTransform.scaleX, dt / rootTransform.scaleY);
     dt= Math.sqrt(dp.x * dp.x + dp.y * dp.y);
-    console.log(dt);
   }
 
   let handle = setInterval(() => {

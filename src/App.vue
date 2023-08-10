@@ -23,24 +23,11 @@
   </v-app>
 </template>
 <script setup lang="ts">
-import { Ref, inject, ref } from "vue";
-import { Client, GameState } from "./client";
-import { provide } from "vue";
 import SelectionInfoPanel from "./components/SelectionInfoPanel.vue";
 import CrewBoard from "./components/CrewBoard.vue";
 import Dialogs from "./components/Dialogs.vue";
 import InfoPanelView from "./components/InfoPanelView.vue";
 import MainPanel from "./components/MainPanel.vue";
-import { watch } from "vue";
-
-const client = inject<Client>("$client") as Client;
-const gamestate: Ref<GameState | undefined> = ref();
-
-provide("state", gamestate);
-
-client.$onStateUpdate((newState: GameState) => {
-  gamestate.value = newState;
-});
 
 </script>
 

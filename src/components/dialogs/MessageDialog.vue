@@ -25,12 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import { Client, ClientMessage } from "@/client";
 import { inject } from "vue";
-import useMessageLogStore from "@/stores/MessageLog"
+import  { useClient } from "@/stores/ClientState"
+import { ClientMessage } from "@/client_socket";
 
-const client = inject<Client>("$client") as Client;
-const messageLog = useMessageLogStore();
+const client = useClient();
 
 const props = defineProps<{
   message: ClientMessage;
@@ -42,7 +41,7 @@ function accept() {
     actionData: { player_ix: 0 },
   };
 
-  messageLog.logMessage(props.message);
+  client.logMessage(props.message);
   client.sendMessage("action", msg);
 }
 </script>

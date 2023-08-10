@@ -20,14 +20,13 @@
 </template>
 
 <script setup lang="ts">
+import useClient from "@/stores/ClientState";
 import { SVG, Element } from "@svgdotjs/svg.js";
 import { Ref, inject, ref } from "vue";
-import { Client, GameState } from "@/client";
 import { watch } from "vue";
 import { computed } from "vue";
 
-const gamestate = inject<Ref<GameState>>("state");
-const client = inject<Client>("$client") as Client;
+const client = useClient();
 const svg_loaded = ref(false);
 
 var ship_svg: Element;
@@ -41,9 +40,9 @@ const rooms: Record<string, string> = {
 };
 
 const isSelectRoomPhase = computed(() => {
-  let phase = gamestate?.value?.phase;
+  let phase = client.gamestate.phase;
   return (
-    phase != undefined && "ShipActionPhase" in phase && phase.ShipActionPhase == null
+     "ShipActionPhase" in phase && phase.ShipActionPhase == null
   );
 });
 
@@ -74,7 +73,7 @@ watch([isSelectRoomPhase, svg_loaded], ([isPhase, _loaded]) => {
 });
 
 watch(
-  () => gamestate?.value?.room,
+  () => client.gamestate.room,
   (newRoom) => {
     if (ship_svg == undefined || newRoom == undefined) return;
 

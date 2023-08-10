@@ -10,19 +10,30 @@
                   v-bind="props"
                   density="compact"
                   icon="mdi-home-circle"
-                  @click="messageLog.selectPanel('main')"
+                  @click="client.selectPanel('main')"
                 ></v-btn>
               </template>
             </v-tooltip>
 
             <v-tooltip text="Map">
               <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              density="compact"
-              icon="mdi-map"
-              @click="messageLog.selectPanel('map')"
-            ></v-btn>
+                <v-btn
+                  v-bind="props"
+                  density="compact"
+                  icon="mdi-map"
+                  @click="client.selectPanel('map')"
+                ></v-btn>
+              </template>
+            </v-tooltip>
+
+            <v-tooltip text="Settigns">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  density="compact"
+                  icon="mdi-restart"
+                  @click="restart"
+                ></v-btn>
               </template>
             </v-tooltip>
           </div>
@@ -31,7 +42,7 @@
         <v-divider :vertical="true"></v-divider>
 
         <v-col cols="9">
-          <v-virtual-scroll class="message_scroll" :items="messageLog.messages">
+          <v-virtual-scroll class="message_scroll" :items="client.messages">
             <template v-slot:default="{ item }">> {{ item }}</template>
           </v-virtual-scroll>
         </v-col>
@@ -52,30 +63,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, Ref, ref } from "vue";
-import { Client, GameState } from "@/client";
-import useMessageLogStore from "@/stores/MessageLog";
+import { computed } from "vue";
+import useClient from "../stores/ClientState";
 
-const client = inject<Client>("$client") as Client;
-const gamestate = inject<Ref<GameState>>("state");
-const messageLog = useMessageLogStore();
+const client = useClient();
 
 const actionButton = computed(() => {
   let button = { disabled: true, text: "", click: () => {} };
   return button;
 });
 
-function drawEventCard() {
-  let actionMsg = {
-    actionType: "handleEventPhaseAction",
-    actionData: {player_ix: 0}
-  };
-  client.sendMessage("action", actionMsg);
+function restart() {
+  client.sendMessage("restart", {});
 }
 </script>
 
 <style scoped>
 .message_scroll {
+  /* TODO don't hardcode this (css variables not working?)*/
   height: 26vh;
 }
 </style>

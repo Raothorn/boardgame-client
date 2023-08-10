@@ -24,11 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { Client } from "@/client";
+import useClient from "@/stores/ClientState";
 import { inject } from "vue";
 import { ref } from "vue";
 
-const client = inject<Client>("$client") as Client;
+const client = useClient();
 
 const crewIx = ref(0);
 const discardIx = ref(0);

@@ -28,15 +28,14 @@
 </template>
 
 <script setup lang="ts">
-import { Client, GameState } from "@/client";
+import useClient from "@/stores/ClientState";
 import { Ref, computed, inject, ref, watch } from "vue";
 
-const gamestate = inject<Ref<GameState>>("state");
-const client = inject<Client>("$client") as Client;
+const client = useClient();
 const tokenId = ref();
 
 const tokens = computed(() => {
-  let phase = gamestate?.value?.phase;
+  let phase = client.gamestate.phase;
   if (
     phase == undefined ||
     typeof phase === "string" ||

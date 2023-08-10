@@ -55,11 +55,9 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from "vue";
-import Map from "./Map.vue";
+import useClient from "@/stores/ClientState";
 
-import { Client, GameState } from "@/client";
-const client = inject<Client>("$client") as Client;
+const client = useClient();
 
 function selectTravelAction() {
   let msg = {

@@ -26,18 +26,14 @@ import ShipBoard from "./ShipBoard.vue";
 import Map from './Map.vue'
 import MainActionPanel from './MainActionPanel.vue'
 import { Ref, computed, inject, watch } from "vue";
-import { GameState } from "@/client";
-import useMessageLogStore from "@/stores/MessageLog";
+import { useClient } from "@/stores/ClientState";
 import SelectEventOption from "./dialogs/SelectEventOption.vue";
 
-const gamestate = inject<Ref<GameState>>("state");
-
-// TODO refactor name
-const client = useMessageLogStore();
+const client = useClient();
 
 const actualPanel = computed(() => {
   if (client.selectedPanel == "main") {
-    let phase = gamestate?.value?.phase;
+    let phase = client.gamestate.phase;
     if (!phase) return "ship"
 
     if ("ShipActionPhase" in phase) {
@@ -59,7 +55,7 @@ const actualPanel = computed(() => {
 })
 
 watch(
-  () => gamestate?.value?.phase,
+  () => client.gamestate.phase,
   (phase) => {
     if (phase != undefined && "MainActionPhase" in phase) {
 

@@ -53,7 +53,6 @@
 </template>
 
 <script setup lang="ts">
-import { Client, GameState, Crew } from "@/client";
 import { Ref, computed, inject, ref } from "vue";
 import SavvyIcon from "./icons/SavvyIcon.vue";
 import CraftIcon from "./icons/CraftIcon.vue";
@@ -61,8 +60,9 @@ import StrengthIcon from "./icons/StrengthIcon.vue";
 import PerceptionIcon from "./icons/PerceptionIcon.vue";
 import WitsIcon from "./icons/WitsIcon.vue";
 import { VContainer } from "vuetify/lib/components/index.mjs";
+import useClient from "@/stores/ClientState";
 
-const gamestate = inject<Ref<GameState>>("state");
+const client = useClient();
 
 const selectedCrewIx = ref(0);
 
@@ -73,8 +73,7 @@ const selectedCrew = computed(() => {
 });
 
 const crew = computed(() => {
-  if (gamestate?.value?.crew == undefined) return [];
-  return gamestate?.value?.crew.map((crew) => {
+  return client.gamestate.crew.map((crew) => {
     // crew.name = crew.name.split(" ")[0];
     return crew;
   });

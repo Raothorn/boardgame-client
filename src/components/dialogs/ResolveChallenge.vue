@@ -45,11 +45,10 @@
 </template>
 
 <script setup lang="ts">
-import { Client, GameState } from "@/client";
+import useClientStore from "@/stores/ClientState";
 import { Ref, computed, inject, ref } from "vue";
 
-const gamestate = inject<Ref<GameState>>("state");
-const client = inject<Client>("$client") as Client;
+const client = useClientStore();
 const selectedCrew = ref([]);
 
 function resolveChallenge() {
@@ -70,7 +69,7 @@ function acceptResult() {
 }
 
 const challengePhase = computed(() => {
-  let phase = gamestate?.value.phase;
+  let phase = client.gamestate.phase;
   if (phase == undefined || !("ChallengePhase" in phase))
     return { challenge: { skill: "noskill", amount: 0 }, added: 0 };
 
@@ -82,10 +81,8 @@ const challenge = computed(() => {
 });
 
 const crew_members = computed(() => {
-  if (gamestate?.value.crew == undefined) return [];
-
   let all_crew = [];
-  for (let crew of gamestate?.value.crew) {
+  for (let crew of client.gamestate.crew) {
     all_crew.push({
       name: crew.name,
       skill: crew.skills[challenge.value.skill],

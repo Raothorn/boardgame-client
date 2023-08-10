@@ -1,7 +1,7 @@
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-default.css";
 
-export class Client {
+export class ClientSocket {
   private socket: WebSocket;
   private onStateUpdate: (gs: GameState) => void;
 
@@ -10,12 +10,10 @@ export class Client {
     this.socket = new WebSocket("ws://localhost:2000/");
 
     this.socket.onopen = (_) => {
-      console.log("connected");
     };
 
     this.socket.onmessage = (event) => {
       let msg = JSON.parse(event.data);
-      console.log(msg);
       if (msg.msgType == "update") {
         this.onStateUpdate(msg.msgData);
       } else if (msg.msgType == "notify") {
@@ -36,7 +34,7 @@ export class Client {
   }
 }
 
-export default Client;
+export default ClientSocket;
 
 export type GameState = {
   phase: GamePhase;
@@ -85,3 +83,20 @@ export type ClientMessage =
   | { DrewAbilityCard: { card: AbilityCard } };
 
 export type AbilityCard = { name: string; deck_ix: number };
+
+export function defaultGamestate() : GameState {
+  return {
+    phase: { ShipActionPhase: null},
+    players: [],
+    crew: [],
+    map: {
+      ship_area: 0,
+      adjacent_areas: [],
+      visible_areas: [],
+      current_region: 0
+    },
+    resources: {},
+    room: "",
+    message_queue: []
+  };
+}

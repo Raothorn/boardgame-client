@@ -2,15 +2,27 @@
   <v-card v-if="event != null" class="fill-height">
     <v-container>
       <v-row>
-        <v-col>
+        <v-col cols="8" md="6">
           <v-card-item class="d-flex justify-center">
             <img :src="`../../assets/event_deck/${event.deck_index}.png`" />
           </v-card-item>
         </v-col>
-        <v-col>
+        <v-col cols="4" md="6">
           <div class="fill-height d-flex flex-column justify-space-evenly">
             <template v-for="(option, ix) in event.options">
-              <v-btn @click="optionSelected(ix)" color="primary" size="x-large" variant="tonal">{{ option.text }}</v-btn>
+              <v-btn
+                @click="optionSelected(ix)"
+                color="primary"
+                size="x-large"
+                variant="tonal"
+              >
+                <template v-if="$vuetify.display.mdAndUp">
+                  {{ option.text }}
+                </template>
+                <template v-else>
+                  Option {{ ix + 1 }}
+                </template>
+              </v-btn>
             </template>
           </div>
         </v-col>
@@ -31,14 +43,13 @@
 </template>
 
 <script setup lang="ts">
-import { Client, GameState } from "@/client";
-import { Ref, computed, inject } from "vue";
+import useClient from "@/stores/ClientState";
+import { computed, } from "vue";
 
-const gamestate = inject<Ref<GameState>>("state");
-const client = inject<Client>("$client") as Client;
+const client = useClient();
 
 const event = computed(() => {
-  let phase = gamestate?.value.phase;
+  let phase = client.gamestate.phase;
   if (phase == undefined || !("EventPhase" in phase)) {
     return null;
   }

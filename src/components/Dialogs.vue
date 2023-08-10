@@ -16,27 +16,20 @@ import DrawForDeckAction from "./dialogs/DrawForDeckAction.vue";
 import SelectEventOption from "./dialogs/SelectEventOption.vue";
 import ResolveChallenge from "./dialogs/ResolveChallenge.vue";
 import MessageDialog from "./dialogs/MessageDialog.vue";
-import { GameState } from "@/client";
+import useClient from "@/stores/ClientState";
 
-const gamestate = inject<Ref<GameState>>("state");
+const client = useClient();
 
 const message = computed(() => {
-  if (
-    gamestate == undefined ||
-    gamestate.value == undefined ||
-    gamestate.value.message_queue.length == 0
-  )
+  if (client.gamestate.message_queue.length == 0) {
     return null;
-
-  let result = gamestate.value.message_queue.pop();
-
-  return result;
+  } else {
+    return client.gamestate.message_queue.slice(-1)[0];
+  }
 });
 
 const promptComponent = computed(() => {
-  const phase = gamestate?.value?.phase;
-
-  if (phase == undefined || gamestate == undefined) return null;
+  const phase = client.gamestate.phase;
 
   if ("ShipActionPhase" in phase && phase.ShipActionPhase != null) {
     if (typeof phase.ShipActionPhase === "string") {
@@ -46,8 +39,7 @@ const promptComponent = computed(() => {
     } else if ("DeckAction" in phase.ShipActionPhase) {
       return DrawForDeckAction;
     }
-  }
-  else if ("ChallengePhase" in phase) {
+  } else if ("ChallengePhase" in phase) {
     return ResolveChallenge;
   }
 
