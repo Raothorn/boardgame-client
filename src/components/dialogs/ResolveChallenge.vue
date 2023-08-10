@@ -1,40 +1,48 @@
 <template>
-  <v-card width="400">
+  <v-card class="fill-height d-flex flex-column justify-center align-center">
     <v-card-title>
-      <div class="d-flex justify-space-evenly">
-        <span>{{ challenge.skill }} Challenge: {{ challenge.amount }} </span>
-        <span :style="{ color: totalSkill < challenge.amount ? 'red' : 'green' }">
+      <div class="d-flex justify-space-between">
+        <span>{{ challenge.skill }} Challenge: {{ challenge.amount }}</span>
+      </div>
+    </v-card-title>
+    <v-card-subtitle>
+        <span
+          :style="{ color: totalSkill < challenge.amount ? 'red' : 'green' }"
+        >
           Total: {{ crewSkill }} +
           {{ challengePhase.added ? challengePhase.added : "?" }}
         </span>
-      </div>
-    </v-card-title>
-    <v-card-item> </v-card-item>
+    </v-card-subtitle>
     <v-card-item>
-      <v-list density="compact">
-        <template v-for="(crew, ix) in crew_members">
-          <v-list-item v-if="crew.skill > 0">
-            <v-checkbox
-              v-model="selectedCrew"
-              :value="ix"
-              hide-details
-              :disabled="challengePhase.added != null || crew.skill < 1"
-              density="compact"
-            >
-              <template v-slot:label>
-                <v-row>
-                  <v-col cols="6"> {{ crew.name }} </v-col>
-                  <v-spacer />
-                  <v-col class="ms-auto"> {{ crew.skill }} </v-col>
-                </v-row>
-              </template>
-            </v-checkbox>
-          </v-list-item>
-        </template>
-      </v-list>
+      <v-sheet :elevation="13" border rounded>
+        <v-list >
+          <template v-for="(crew, ix) in crew_members">
+            <v-list-item v-if="crew.skill > 0">
+              <v-checkbox
+                v-model="selectedCrew"
+                :value="ix"
+                hide-details
+                :disabled="challengePhase.added != null || crew.skill < 1"
+                density="compact"
+                >
+                <template v-slot:label>
+                  {{crew.name}} {{crew.skill}}
+                </template>
+              </v-checkbox>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-sheet>
     </v-card-item>
     <v-card-actions>
-      <v-btn v-if="!challengePhase.added" variant="tonal" width="100%" @click="resolveChallenge">
+      <v-btn
+        v-if="!challengePhase.added"
+        variant="tonal"
+        color="primary"
+        @click="resolveChallenge"
+        size="x-large"
+        class="mx-auto"
+      >
         Resolve Challenge
       </v-btn>
       <v-btn v-else variant="tonal" width="100%" @click="acceptResult">
@@ -66,6 +74,7 @@ function acceptResult() {
     actionData: { player_ix: 0 },
   };
   client.sendMessage("action", actionMessage);
+  client.selectPanel("home");
 }
 
 const challengePhase = computed(() => {

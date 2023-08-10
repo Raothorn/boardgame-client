@@ -39,10 +39,7 @@ const promptComponent = computed(() => {
     } else if ("DeckAction" in phase.ShipActionPhase) {
       return DrawForDeckAction;
     }
-  } else if ("ChallengePhase" in phase) {
-    return ResolveChallenge;
   }
-
   return null;
 });
 </script>

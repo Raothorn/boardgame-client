@@ -30,7 +30,7 @@ export const useClient = defineStore("client", () => {
   }
 
   // Global UI state
-  const selectedPanel = ref("main");
+  const selectedPanel = ref("ship");
 
   // Messages
   const messages: Ref<string[]> = ref([]);
@@ -48,7 +48,10 @@ export const useClient = defineStore("client", () => {
   }
 
   function selectPanel(panel: string) {
-    selectedPanel.value = panel;
+    const panels = ["ship", "map", "event", "challenge", "home"];
+    if (panels.includes(panel)) {
+      selectedPanel.value = panel;
+    }
   }
 
   return {
@@ -63,11 +66,11 @@ export const useClient = defineStore("client", () => {
 });
 
 export type ClientSettings = {
-  debugMode: boolean
-}
+  debugMode: boolean;
+};
 
-function defaultSettings() : ClientSettings {
-  return  { debugMode: false }
+function defaultSettings(): ClientSettings {
+  return { debugMode: false };
 }
 
 export default useClient;
