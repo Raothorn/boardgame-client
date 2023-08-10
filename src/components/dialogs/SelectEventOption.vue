@@ -30,15 +30,7 @@
     </v-container>
   </v-card>
   <v-card class="fill-height d-flex justify-center align-center" v-else>
-    <v-btn
-      width="100"
-      height="100"
-      color="primary"
-      variant="tonal"
-      @click="drawEventCard"
-    >
-      Draw Card
-    </v-btn>
+    Event Deck Placeholder
   </v-card>
 </template>
 

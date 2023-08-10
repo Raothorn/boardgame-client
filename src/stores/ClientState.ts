@@ -17,6 +17,8 @@ export const useClient = defineStore("client", () => {
     return _gamestate.value;
   });
 
+  const settings: Ref<ClientSettings> = ref(defaultSettings());
+
   // Socket connection
   const clientSocket = ref(new ClientSocket());
   clientSocket.value.$onStateUpdate((newState: GameState) => {
@@ -56,7 +58,16 @@ export const useClient = defineStore("client", () => {
     selectedPanel,
     sendMessage,
     gamestate,
+    settings,
   };
 });
+
+export type ClientSettings = {
+  debugMode: boolean
+}
+
+function defaultSettings() : ClientSettings {
+  return  { debugMode: false }
+}
 
 export default useClient;

@@ -25,7 +25,7 @@
 import ShipBoard from "./ShipBoard.vue";
 import Map from './Map.vue'
 import MainActionPanel from './MainActionPanel.vue'
-import { Ref, computed, inject, watch } from "vue";
+import { computed, watch } from "vue";
 import { useClient } from "@/stores/ClientState";
 import SelectEventOption from "./dialogs/SelectEventOption.vue";
 

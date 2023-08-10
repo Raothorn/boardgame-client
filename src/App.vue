@@ -8,7 +8,8 @@
         color="grey-darken-4"
         rounded
       >
-        <MainPanel ></MainPanel>
+        <GameDisplay v-if="client.settings.debugMode"></GameDisplay>
+        <MainPanel v-else></MainPanel>
       </v-sheet>
       <v-card id="infopanel" class="left-col bottom-row">
         <InfoPanelView ></InfoPanelView>
@@ -28,7 +29,10 @@ import CrewBoard from "./components/CrewBoard.vue";
 import Dialogs from "./components/Dialogs.vue";
 import InfoPanelView from "./components/InfoPanelView.vue";
 import MainPanel from "./components/MainPanel.vue";
+import GameDisplay from "./components/GameDisplay.vue"
+import useClient from "./stores/ClientState";
 
+const client = useClient();
 </script>
 
 <style scoped>
@@ -37,7 +41,6 @@ import MainPanel from "./components/MainPanel.vue";
 }
 
 html {
-  overflow-y: hidden;
   height: 100vh;
 }
 

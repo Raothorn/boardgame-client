@@ -21,6 +21,7 @@ const client = useClient();
 var mapSvg: Svg;
 var ship: Element;
 var mapHeight: number;
+var root: Element;
 
 const svg_loaded = ref(false);
 
@@ -29,6 +30,7 @@ const svg_loaded = ref(false);
 
 const shouldHighlightAreas = computed(() => {
   let phase = client.gamestate.phase;
+  console.log("phase")
   return "MainActionPhase" in phase;
 })
 
@@ -63,6 +65,8 @@ function mapLoad() {
   let scaleY = (mapHeight / mapSvg.rbox()?.h) as number;
   mapSvg.viewbox(0, 0, originalWidth, mapContainer.offsetHeight * scaleY);
 
+  root = mapSvg.findOne("#root") as Element;
+
   // Handle mouse drag
   var dragY: number | null = null;
   function onMouseDown(e: MouseEvent) {
@@ -95,14 +99,14 @@ function mapLoad() {
   let startingPos = mapSvg.findOne("#ship_zone_1") as Element;
   ship.transform({relative: [startingPos.x() as number, startingPos.y() as number]});
 
+  centerShipInViewbox();
+
 
   highlightAreas();
   svg_loaded.value = true;
 }
 
 function highlightAreas() {
-  if (!shouldHighlightAreas) return;
-
   let map = client.gamestate.map;
   let visibleAreas = map.visible_areas;
   let adjacentAreas = map.adjacent_areas;
@@ -113,10 +117,11 @@ function highlightAreas() {
     let area = mapSvg.findOne(areaId) as Element;
     if (!area) break;
 
-    if (adjacentAreas.includes(areaIx)) {
+    if (shouldHighlightAreas.value && adjacentAreas.includes(areaIx)) {
       area.addClass("available");
       area.click(() => travelAction(areaIx));
     } else {
+      console.log("removing highlight on ", areaIx)
       area.removeClass("available");
       area.click(null);
     }
@@ -151,7 +156,7 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
 
   ship.transform(new Matrix());
 
-  let rootTransform = (mapSvg.findOne("#root") as Element).transform();
+  let rootTransform = root.transform();
 
 
   let t = 0;
@@ -160,7 +165,7 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
   let dt = 10;
   if (rootTransform.scaleX && rootTransform.scaleY) {
     let dp = new Point(dt / rootTransform.scaleX, dt / rootTransform.scaleY);
-    dt= Math.sqrt(dp.x * dp.x + dp.y * dp.y);
+    dt = Math.sqrt(dp.x * dp.x + dp.y * dp.y);
   }
 
   let handle = setInterval(() => {
@@ -190,12 +195,25 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
       }
     }
 
-    //Center viewbox around dot
+    centerShipInViewbox();
+
+    t += dt;
+  }, 5);
+}
+
+function centerShipInViewbox() {
+    if (!ship || !root) {
+      return;
+    }
+
     let viewbox = mapSvg.viewbox();
 
-    point = point.transform(new Matrix(rootTransform));
-
-    let newY = point.y - viewbox.height / 2;
+    let shipY = ship.y() as number;
+    let scaleY = root.transform().scaleY
+    if (scaleY != undefined) {
+      shipY *= scaleY
+    }
+    let newY = shipY - viewbox.height / 2;
 
     if (newY < 0) {
       newY = 0;
@@ -207,8 +225,6 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
     viewbox.y = newY;
     mapSvg.viewbox(viewbox);
 
-    t += dt;
-  }, 5);
 }
 
 function scrollViewport(dy: number) {
