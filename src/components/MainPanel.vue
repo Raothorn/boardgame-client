@@ -18,7 +18,7 @@
       </v-window-item>
 
       <v-window-item class="fill-height" value="home">
-        Home View placeholder
+        <HomePanel></HomePanel>
       </v-window-item>
     </v-window>
 
@@ -29,9 +29,10 @@
 import ShipBoard from "./ShipBoard.vue";
 import Map from './Map.vue'
 import ResolveChallenge from './dialogs/ResolveChallenge.vue'
+import SelectEventOption from "./dialogs/SelectEventOption.vue";
+import HomePanel from './HomePanel.vue'
 import { computed, watch } from "vue";
 import { useClient } from "@/stores/ClientState";
-import SelectEventOption from "./dialogs/SelectEventOption.vue";
 
 const client = useClient();
 

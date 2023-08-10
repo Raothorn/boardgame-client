@@ -76,9 +76,9 @@ const actionButton = computed(() => {
       if (actionCount < 2) {
         return simpleButton("Select Main Action", "", "mainActionMenu");
       } else {
-        return button("End Turn", "", endTurn)
+        return button("End Turn", "", endTurn);
       }
-    } else if ( action == "Travel" ) {
+    } else if (action == "Travel") {
       return simpleButton("Select travel destination", "map");
     }
   }
@@ -88,7 +88,19 @@ const actionButton = computed(() => {
     return simpleButton("Resolve Challenge", "challenge");
   }
 
-  return {disabled: true, text: "", click: () => {}, menu:""}
+  // Select Crew Member phase
+  else if ("SelectCrewMemberPhase" in phase) {
+    let msg = {
+      actionType: "selectCrewMemberAction",
+      actionData: { crew_ix: null, player_ix: 0 },
+    };
+
+    return button("Select Crew Member (Cancel)", "", () =>
+      client.sendMessage("action", msg),
+    );
+  }
+
+  return { disabled: true, text: "", click: () => {}, menu: "" };
 });
 
 function drawEventCard() {

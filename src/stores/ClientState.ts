@@ -30,7 +30,7 @@ export const useClient = defineStore("client", () => {
   }
 
   // Global UI state
-  const selectedPanel = ref("ship");
+  const selectedPanel = ref("home");
 
   // Messages
   const messages: Ref<string[]> = ref([]);

@@ -6,49 +6,77 @@
           v-for="(crew_member, ix) in crew"
           @click="selectedCrewIx = ix"
         >
-          <template v-if="$vuetify.display.width > 1350">
-            <v-sheet border rounded color="grey-darken-3" class="py-auto">
-              <v-container fluid class="py-0">
-                <v-row class="d-flex justify-start align-center">
-                  <v-col cols="4">
-                    <v-card-item>
-                      <h4 v-if="$vuetify.display.mdAndUp">
-                        {{ crew_member.name.split(" ")[0] }}
-                      </h4>
-                    </v-card-item>
-                  </v-col>
-                  <v-divider :vertical="true"></v-divider>
-                  <v-col>
-                    <div class="d-flex justify-start">
-                      <template v-for="(amount, name) in crew_member.skills">
-                        <span v-if="amount > 0">
-                          <component
-                            class="mx-1"
-                            :is="skillIcon(name)"
-                          ></component>
-                        </span>
-                        <span v-if="amount > 1">x{{ amount }}</span>
-                      </template>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-sheet>
-          </template>
-          <template v-else>
-            <v-sheet class="d-flex justify-start">
-              {{ crew_member.name.split(" ")[0] }}
-              <template v-for="(amount, name) in crew_member.skills">
-                <span v-if="amount > 0">
-                  <component class="mx-1" :is="skillIcon(name)"></component>
-                </span>
-                <span v-if="amount > 1">x{{ amount }}</span>
-              </template>
-            </v-sheet>
-          </template>
+          <v-sheet
+            border
+            rounded
+            :color="isSelectCrewMemberPhase ? 'grey-darken-2' : 'grey-darken-3'"
+            class="py-auto"
+            :elevation="10"
+            @click="clickAction(ix)"
+          >
+            <v-container fluid class="py-0">
+              <v-row class="d-flex justify-start align-center">
+                <v-col cols="4">
+                  <v-card-item>
+                    <h4>
+                      {{ crew_member.name.split(" ")[0] }}
+                    </h4>
+                  </v-card-item>
+                </v-col>
+                <v-divider :vertical="true"></v-divider>
+                <v-col cols="6">
+                  <div class="d-flex justify-start">
+                    <template v-for="(amount, name) in crew_member.skills">
+                      <span v-if="amount > 0">
+                        <component
+                          class="mx-1"
+                          :is="skillIcon(name)"
+                        ></component>
+                      </span>
+                      <span v-if="amount > 1">x{{ amount }}</span>
+                    </template>
+                  </div>
+                </v-col>
+                <v-col cols="2">
+                  <div class="d-flex justify-end">
+                    <template
+                      v-for="card in crew_member.equipped_ability_cards"
+                    >
+                      <v-menu open-on-hover open-delay="100">
+                        <template v-slot:activator="{ props }">
+                          <v-icon
+                            icon="mdi-card"
+                            v-bind="props"
+                            color="blue-darken-3"
+                          ></v-icon>
+                        </template>
+                        <v-sheet height="250" style="overflow: hidden">
+                          <img
+                            :src="`/assets/ability_card_deck/${card.deck_ix}.png`"
+                            class="fill-height"
+                          />
+                        </v-sheet>
+                      </v-menu>
+                    </template>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-sheet>
         </v-list-item>
       </v-list>
     </v-card>
+    <v-snackbar
+      :model-value="isSelectCrewMemberPhase"
+      location="bottom center"
+      :timeout="1000"
+      color="background"
+      contained
+    >
+      <div class="d-flex justify-center">
+        <span>Select Crew Member</span>
+      </div>
+    </v-snackbar>
   </v-sheet>
 </template>
 
@@ -66,11 +94,11 @@ const client = useClient();
 
 const selectedCrewIx = ref(0);
 
-const selectedCrew = computed(() => {
-  if (crew.value.length == 0) return undefined;
-
-  return crew.value[selectedCrewIx.value];
-});
+// const selectedCrew = computed(() => {
+//   if (crew.value.length == 0) return undefined;
+//
+//   return crew.value[selectedCrewIx.value];
+// });
 
 const crew = computed(() => {
   return client.gamestate.crew.map((crew) => {
@@ -78,6 +106,21 @@ const crew = computed(() => {
     return crew;
   });
 });
+
+const isSelectCrewMemberPhase = computed(() => {
+  return "SelectCrewMemberPhase" in client.gamestate.phase;
+});
+
+function clickAction(ix: number) {
+  if (isSelectCrewMemberPhase.value) {
+    let msg = {
+      actionType: "selectCrewMemberAction",
+      actionData: { crew_ix: ix, player_ix: 0 },
+    };
+
+    client.sendMessage("action", msg);
+  }
+}
 
 function skillIcon(name: string) {
   if (name == "Savvy") return SavvyIcon;

@@ -38,7 +38,7 @@ export default ClientSocket;
 
 export type GameState = {
   phase: GamePhase;
-  players: any[];
+  players: Player[];
   crew: Crew[];
   map: {
     ship_area: number;
@@ -55,17 +55,18 @@ export type GamePhase =
   | { ShipActionPhase: ShipActionSubphase | null }
   | { EventPhase: EventCard | null }
   | { ChallengePhase: { challenge: Challenge; added: number | null } }
-  | { MainActionPhase: [string | null, number] };
+  | { MainActionPhase: [string | null, number] }
+  | { SelectCrewMemberPhase: null }
 
 
 export type ShipActionSubphase = {
-  DeckAction: { search_tokens_drawn: number[] };
+  DeckAction: { search_tokens_drawn: number[] }
 };
 
 export type EventCard = {
-  name: string;
-  options: EventOption[];
-  deck_index: number;
+  name: string
+  options: EventOption[]
+  deck_index: number
 };
 
 export type EventOption = { text: string };
@@ -73,22 +74,28 @@ export type EventOption = { text: string };
 export type Challenge = { skill: string; amount: number };
 
 export type Crew = {
-  name: string;
-  fatigue: number;
-  damage: number;
-  skills: Record<string, number>;
+  name: string
+  fatigue: number
+  damage: number
+  skills: Record<string, number>
+  equipped_ability_cards: AbilityCard[]
 };
 
 export type ClientMessage =
   | { GainCommandPoints: { amount: number } }
-  | { DrewAbilityCard: { card: AbilityCard } };
+  | { DrewAbilityCard: { card: AbilityCard } }
 
-export type AbilityCard = { name: string; deck_ix: number };
+  export type Player = {
+    command_tokens: number
+    hand: AbilityCard[]
+  }
+
+export type AbilityCard = { name: string; deck_ix: number }
 
 export function defaultGamestate() : GameState {
   return {
     phase: { ShipActionPhase: null},
-    players: [],
+    players: [ {command_tokens: 0, hand: []} ],
     crew: [],
     map: {
       ship_area: 0,

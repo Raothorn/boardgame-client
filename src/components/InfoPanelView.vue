@@ -4,16 +4,16 @@
       <v-row>
         <v-col cols="1" class="d-flex justify-center">
           <div class="fill-height d-flex flex-column justify-space-evenly">
-            <!-- <v-tooltip text="Main View"> -->
-            <!--   <template v-slot:activator="{ props }"> -->
-            <!--     <v-btn -->
-            <!--       v-bind="props" -->
-            <!--       density="compact" -->
-            <!--       icon="mdi-home-circle" -->
-            <!--       @click="client.selectPanel('main')" -->
-            <!--     ></v-btn> -->
-            <!--   </template> -->
-            <!-- </v-tooltip> -->
+            <v-tooltip text="Home">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  density="compact"
+                  icon="mdi-home-circle"
+                  @click="client.selectPanel('home')"
+                ></v-btn>
+              </template>
+            </v-tooltip>
 
             <v-tooltip text="Map">
               <template v-slot:activator="{ props }">
