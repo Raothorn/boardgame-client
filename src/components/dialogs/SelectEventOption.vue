@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="event != null" class="fill-height">
+  <v-card v-if="event" class="fill-height">
     <v-container>
       <v-row>
         <v-col cols="8" md="6">
@@ -42,10 +42,9 @@ const client = useClient();
 
 const event = computed(() => {
   let phase = client.gamestate.phase;
-  if (phase == undefined || !("EventPhase" in phase)) {
+  if (!("EventPhase" in phase)) {
     return null;
   }
-  console.log("event");
   return phase.EventPhase;
 });
 

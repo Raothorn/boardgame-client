@@ -30,8 +30,7 @@ const svg_loaded = ref(false);
 
 const shouldHighlightAreas = computed(() => {
   let phase = client.gamestate.phase;
-  console.log("phase")
-  return "MainActionPhase" in phase;
+  return "MainActionPhase" in phase && phase.MainActionPhase[0] == "Travel";
 })
 
 const svg_source = computed(() => {
@@ -46,6 +45,10 @@ watch(
     animateShip(oldArea, newArea, highlightAreas);
   },
 );
+
+watch(shouldHighlightAreas, (_) => {
+  highlightAreas();
+});
 
 // Functions
 function mapLoad() {
@@ -103,10 +106,12 @@ function mapLoad() {
 
 
   highlightAreas();
+
   svg_loaded.value = true;
 }
 
 function highlightAreas() {
+  if (!mapSvg) return;
   let map = client.gamestate.map;
   let visibleAreas = map.visible_areas;
   let adjacentAreas = map.adjacent_areas;

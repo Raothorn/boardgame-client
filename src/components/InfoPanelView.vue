@@ -104,35 +104,54 @@ const actionButton = computed(() => {
   let button = {
     disabled: false,
     text: "",
-    click: () => {
-      client.selectPanel("main");
-    },
+    click: () => {},
   };
 
   let phase = client.gamestate.phase;
   if ("ShipActionPhase" in phase) {
     button.text = "Choose ship action";
-
-    button.disabled = ["main", "ship"].includes(client.selectedPanel);
+    button.disabled = client.selectedPanel == "ship";
+    button.click = () => client.selectPanel("ship");
   } else if ("EventPhase" in phase) {
     if (phase.EventPhase == null) {
       button.text = "Draw Event Card";
-
       button.click = () => {
         drawEventCard();
-        client.selectPanel("main");
+        client.selectPanel("event");
       };
     } else {
       button.text = "Choose event option";
-      button.disabled = client.selectedPanel == "main";
+      button.disabled = client.selectedPanel == "event";
+      button.click = () => client.selectPanel("event");
     }
   } else if ("MainActionPhase" in phase) {
-    if (phase.MainActionPhase.length == 0) {
-      button.text = "Select main action";
-      button.disabled = client.selectedPanel == "main";
+    if (phase.MainActionPhase[0] == null) {
+
+      if(phase.MainActionPhase[1] < 2) {
+        button.text = "Select main action";
+        button.disabled = client.selectedPanel == "mainAction";
+        button.click = () => client.selectPanel("mainAction");
+      } else {
+        button.text = "End turn"
+        button.disabled = false;
+        button.click = () => {
+          // TODO actual end turn not other thing
+          let msg = {
+            actionType: "selectMainAction",
+            actionData: {player_ix: 0}
+          };
+          client.sendMessage("action", msg);
+          client.selectPanel("ship");
+        }
+      }
+
+
     } else {
       button.text = "Select travel destination";
-      button.disabled = ["main", "map"].includes(client.selectedPanel)
+      button.disabled = client.selectedPanel == "map";
+      button.click = () => {
+        client.selectPanel("map")
+      }
     }
   } else {
     button.disabled = true;

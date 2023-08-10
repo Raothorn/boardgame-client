@@ -32,25 +32,6 @@ import SelectEventOption from "./dialogs/SelectEventOption.vue";
 const client = useClient();
 
 const actualPanel = computed(() => {
-  if (client.selectedPanel == "main") {
-    let phase = client.gamestate.phase;
-    if (!phase) return "ship"
-
-    if ("ShipActionPhase" in phase) {
-      return "ship";
-    }
-    else if ("EventPhase" in phase) {
-      return "event";
-    }
-    else if ("MainActionPhase" in phase) {
-      if(phase.MainActionPhase.length == 0) {
-        return "mainAction";
-      }
-      else {
-        return "map";
-      }
-    }
-  }
   return client.selectedPanel;
 })
 

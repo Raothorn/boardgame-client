@@ -66,6 +66,7 @@ function selectTravelAction() {
   };
 
   client.sendMessage("action", msg);
+  client.selectPanel("map");
 }
 
 </script>

@@ -1,5 +1,8 @@
 <template>
-  <v-sheet id="ship_board" class="d-flex flex-column justify-center fill-height">
+  <v-sheet
+    id="ship_board"
+    class="d-flex flex-column justify-center fill-height"
+  >
     <div id="ship_container" style="position: relative">
       <object
         id="ship_obj"
@@ -27,9 +30,8 @@ import { watch } from "vue";
 import { computed } from "vue";
 
 const client = useClient();
-const svg_loaded = ref(false);
 
-var ship_svg: Element;
+var ship_svg: Ref<Element | null> = ref(null);
 
 const rooms: Record<string, string> = {
   "#bridge": "Bridge",
@@ -41,9 +43,7 @@ const rooms: Record<string, string> = {
 
 const isSelectRoomPhase = computed(() => {
   let phase = client.gamestate.phase;
-  return (
-     "ShipActionPhase" in phase && phase.ShipActionPhase == null
-  );
+  return "ShipActionPhase" in phase && phase.ShipActionPhase == null;
 });
 
 function selectRoom(roomName: string) {
@@ -55,58 +55,65 @@ function selectRoom(roomName: string) {
   client.sendMessage("action", actionMessage);
 }
 
-watch([isSelectRoomPhase, svg_loaded], ([isPhase, _loaded]) => {
+watch([isSelectRoomPhase, ship_svg], ([isPhase, _loaded]) => {
+  // Force svg resize
+  resize();
   if (ship_svg == undefined) return;
   for (let roomId in rooms) {
     let roomName: string = rooms[roomId];
-    let rect = ship_svg.findOne(roomId) as Element;
+    let rect = ship_svg.value?.findOne(roomId) as Element;
     if (!rect) break;
 
     if (isPhase) {
-      rect.addClass("selectableRoom");
-      rect.click(() => selectRoom(roomName));
+      rect?.addClass("selectableRoom");
+      rect?.click(() => selectRoom(roomName));
     } else {
-      rect.removeClass("selectableRoom");
-      rect.click(null);
+      rect?.removeClass("selectableRoom");
+      rect?.click(null);
     }
   }
 });
 
 watch(
   () => client.gamestate.room,
-  (newRoom) => {
-    if (ship_svg == undefined || newRoom == undefined) return;
-
-    for (let roomId in rooms) {
-      let roomName: string = rooms[roomId];
-      let rect = ship_svg.findOne(roomId);
-      if (newRoom == roomName) {
-        rect?.addClass("selectedRoom");
-      } else {
-        rect?.removeClass("selectedRoom");
-      }
-    }
-  },
+  (_room) => paintRooms(),
 );
+
+function paintRooms() {
+  if (ship_svg.value == undefined) return;
+  let currentRoom = client.gamestate.room;
+  console.log(currentRoom);
+  for (let roomId in rooms) {
+    let roomName: string = rooms[roomId];
+    let rect = ship_svg.value.findOne(roomId);
+
+    if (currentRoom == roomName) {
+      rect?.addClass("selectedRoom");
+    } else {
+      rect?.removeClass("selectedRoom");
+    }
+  }
+}
 
 function shipLoad() {
   const obj = document.querySelector("#ship_obj") as any;
   const svg = obj.contentDocument as Document;
 
-  ship_svg = SVG(svg.querySelector("#svg48"));
-  svg_loaded.value = true;
+  ship_svg.value = SVG(svg.querySelector("#svg48"));
   resize();
 
-  function resize ()  {
-    let height = document.getElementById("ship_board")?.offsetHeight;
-    height = (height == undefined) ? 0 : height;
+  paintRooms();
 
-    let width = document.getElementById("ship_board")?.offsetWidth;
+  window.addEventListener("resize", resize);
+}
 
-    width = (width == undefined) ? 0 : width;
-    ship_svg.size(width, height);
-  }
+function resize() {
+  let height = document.getElementById("ship_board")?.offsetHeight;
+  height = height == undefined ? 0 : height;
 
-  window.addEventListener('resize', resize);
+  let width = document.getElementById("ship_board")?.offsetWidth;
+
+  width = width == undefined ? 0 : width;
+  ship_svg.value?.size(width, height);
 }
 </script>
