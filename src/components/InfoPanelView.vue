@@ -10,7 +10,7 @@
                   v-bind="props"
                   density="compact"
                   icon="mdi-home-circle"
-                  @click="$emit('panelSelected', 'main')"
+                  @click="messageLog.selectPanel('main')"
                 ></v-btn>
               </template>
             </v-tooltip>
@@ -21,7 +21,7 @@
               v-bind="props"
               density="compact"
               icon="mdi-map"
-              @click="$emit('panelSelected', 'map')"
+              @click="messageLog.selectPanel('map')"
             ></v-btn>
               </template>
             </v-tooltip>
@@ -35,7 +35,7 @@
             <template v-slot:default="{ item }">> {{ item }}</template>
           </v-virtual-scroll>
         </v-col>
-        <v-col class="mx-auto">
+        <v-col cols="2" class="mx-auto">
           <v-btn
             class="w-100 h-100"
             @click="actionButton.click"
@@ -56,28 +56,19 @@ import { computed, inject, Ref, ref } from "vue";
 import { Client, GameState } from "@/client";
 import useMessageLogStore from "@/stores/MessageLog";
 
-const emits = defineEmits(["panelSelected"]);
-
 const client = inject<Client>("$client") as Client;
 const gamestate = inject<Ref<GameState>>("state");
 const messageLog = useMessageLogStore();
 
 const actionButton = computed(() => {
   let button = { disabled: true, text: "", click: () => {} };
-
-  let phase = gamestate?.value?.phase;
-  if (phase != undefined && "EventPhase" in phase && phase.EventPhase == null) {
-    button = { disabled: false, text: "Draw Event", click: drawEventCard };
-  }
-
-  console.log(button);
   return button;
 });
 
 function drawEventCard() {
   let actionMsg = {
     actionType: "handleEventPhaseAction",
-    actionData: {},
+    actionData: {player_ix: 0}
   };
   client.sendMessage("action", actionMsg);
 }

@@ -50,34 +50,6 @@
       </v-list>
     </v-card>
   </v-sheet>
-  <!--   <VSplit :split="70"> -->
-  <!--     <template #first> -->
-  <!--     </template> -->
-  <!--     <template #second> -->
-  <!--       <template v-if="selectedCrew != undefined"> -->
-  <!--         <v-card border class="w-100"> -->
-  <!--           <v-card-title class="d-flex justify-center"> -->
-  <!--             {{ selectedCrew.name }} -->
-  <!--           </v-card-title> -->
-  <!--           <v-card-item> -->
-  <!--             <v-table class="rounded"> -->
-  <!--               <tbody> -->
-  <!--                 <tr> -->
-  <!--                   <td>Damage</td> -->
-  <!--                   <td>{{ selectedCrew.damage }}</td> -->
-  <!--                 </tr> -->
-  <!--                 <tr> -->
-  <!--                   <td>Fatigue</td> -->
-  <!--                   <td>{{ selectedCrew.fatigue }}</td> -->
-  <!--                 </tr> -->
-  <!--               </tbody> -->
-  <!--             </v-table> -->
-  <!--           </v-card-item> -->
-  <!--         </v-card> -->
-  <!--       </template> -->
-  <!--     </template> -->
-  <!--   </VSplit> -->
-  <!-- </v-sheet> -->
 </template>
 
 <script setup lang="ts">
@@ -89,10 +61,8 @@ import StrengthIcon from "./icons/StrengthIcon.vue";
 import PerceptionIcon from "./icons/PerceptionIcon.vue";
 import WitsIcon from "./icons/WitsIcon.vue";
 import { VContainer } from "vuetify/lib/components/index.mjs";
-import VSplit from "./VSplit.vue";
 
 const gamestate = inject<Ref<GameState>>("state");
-const client = inject<Client>("$client") as Client;
 
 const selectedCrewIx = ref(0);
 

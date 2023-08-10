@@ -60,18 +60,15 @@ watch([isSelectRoomPhase, svg_loaded], ([isPhase, _loaded]) => {
   if (ship_svg == undefined) return;
   for (let roomId in rooms) {
     let roomName: string = rooms[roomId];
-    let rect = ship_svg.findOne(roomId);
-
-    const listener = () => {
-      selectRoom(roomName);
-    };
+    let rect = ship_svg.findOne(roomId) as Element;
+    if (!rect) break;
 
     if (isPhase) {
-      rect?.addClass("selectableRoom");
-      rect?.node.addEventListener("click", listener);
+      rect.addClass("selectableRoom");
+      rect.click(() => selectRoom(roomName));
     } else {
-      rect?.removeClass("selectableRoom");
-      rect?.node.replaceWith(rect?.node.cloneNode(true));
+      rect.removeClass("selectableRoom");
+      rect.click(null);
     }
   }
 });

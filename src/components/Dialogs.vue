@@ -46,11 +46,8 @@ const promptComponent = computed(() => {
     } else if ("DeckAction" in phase.ShipActionPhase) {
       return DrawForDeckAction;
     }
-  } else if ("EventPhase" in phase) {
-    if (phase.EventPhase != null) {
-      return SelectEventOption;
-    }
-  } else if ("ChallengePhase" in phase) {
+  }
+  else if ("ChallengePhase" in phase) {
     return ResolveChallenge;
   }
 

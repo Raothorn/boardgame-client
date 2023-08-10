@@ -36,12 +36,18 @@ export class Client {
   }
 }
 
-export default Client
+export default Client;
 
 export type GameState = {
   phase: GamePhase;
   players: any[];
   crew: Crew[];
+  map: {
+    ship_area: number;
+    adjacent_areas: number[];
+    visible_areas: number[];
+    current_region: number;
+  };
   resources: Record<string, number>;
   room: string;
   message_queue: ClientMessage[];
@@ -51,10 +57,11 @@ export type GamePhase =
   | { ShipActionPhase: ShipActionSubphase | null }
   | { EventPhase: EventCard | null }
   | { ChallengePhase: { challenge: Challenge; added: number | null } }
-  | { MainActionPhase: any[] }
+  | { MainActionPhase: any[] };
 
-export type ShipActionSubphase =
-  | { DeckAction: { search_tokens_drawn: number[] } }
+export type ShipActionSubphase = {
+  DeckAction: { search_tokens_drawn: number[] };
+};
 
 export type EventCard = {
   name: string;
@@ -77,4 +84,4 @@ export type ClientMessage =
   | { GainCommandPoints: { amount: number } }
   | { DrewAbilityCard: { card: AbilityCard } };
 
-export type AbilityCard = { name: string, deck_ix: number }
+export type AbilityCard = { name: string; deck_ix: number };

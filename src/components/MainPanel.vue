@@ -9,9 +9,12 @@
         <MainActionPanel></MainActionPanel>
       </v-window-item>
 
-
       <v-window-item class="fill-height" value="map">
-          <Map class="fill-height" :highlight-areas="false"></Map>
+          <Map class="fill-height"></Map>
+      </v-window-item>
+
+      <v-window-item class="fill-height" value="event">
+        <SelectEventOption></SelectEventOption>
       </v-window-item>
     </v-window>
 
@@ -24,22 +27,36 @@ import Map from './Map.vue'
 import MainActionPanel from './MainActionPanel.vue'
 import { Ref, computed, inject, watch } from "vue";
 import { GameState } from "@/client";
+import useMessageLogStore from "@/stores/MessageLog";
+import SelectEventOption from "./dialogs/SelectEventOption.vue";
 
-const props = defineProps<{panel: string}>();
 const gamestate = inject<Ref<GameState>>("state");
 
+// TODO refactor name
+const client = useMessageLogStore();
+
 const actualPanel = computed(() => {
-  let phase = gamestate?.value?.phase;
-  if (props.panel == "main" && phase != undefined) {
-    if ("MainActionPhase" in phase) {
-      return "mainAction";
-    }
-    else {
+  if (client.selectedPanel == "main") {
+    let phase = gamestate?.value?.phase;
+    if (!phase) return "ship"
+
+    if ("ShipActionPhase" in phase) {
       return "ship";
     }
+    else if ("EventPhase" in phase) {
+      return "event";
+    }
+    else if ("MainActionPhase" in phase) {
+      if(phase.MainActionPhase.length == 0) {
+        return "mainAction";
+      }
+      else {
+        return "map";
+      }
+    }
   }
-  return props.panel
-});
+  return client.selectedPanel;
+})
 
 watch(
   () => gamestate?.value?.phase,

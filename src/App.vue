@@ -8,10 +8,10 @@
         color="grey-darken-4"
         rounded
       >
-        <MainPanel :panel="selectedPanel"></MainPanel>
+        <MainPanel ></MainPanel>
       </v-sheet>
       <v-card id="infopanel" class="left-col bottom-row">
-        <InfoPanelView @panel-selected=onPanelSelected></InfoPanelView>
+        <InfoPanelView ></InfoPanelView>
       </v-card>
       <v-sheet id="crewpanel" class="right-col top-row">
         <CrewBoard></CrewBoard>
@@ -35,27 +35,12 @@ import { watch } from "vue";
 
 const client = inject<Client>("$client") as Client;
 const gamestate: Ref<GameState | undefined> = ref();
-const selectedPanel = ref("map");
 
 provide("state", gamestate);
 
 client.$onStateUpdate((newState: GameState) => {
   gamestate.value = newState;
 });
-
-function onPanelSelected(panelName: string) {
-  selectedPanel.value = panelName;
-  console.log(panelName)
-}
-
-watch(
-  () => gamestate?.value?.phase,
-  (phase) => {
-    if (phase != undefined && "MainActionPhase" in phase) {
-      selectedPanel.value = "main"
-    }
-  }
-);
 
 </script>
 

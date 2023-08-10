@@ -3,6 +3,7 @@ import { Ref, ref } from 'vue';
 import { ClientMessage } from '@/client';
 
 export const useMessageLogStore = defineStore('messageLog', () => {
+  const selectedPanel = ref("main");
   const messages: Ref<string[]> = ref([]);
 
   function logMessage(message: ClientMessage) {
@@ -19,7 +20,11 @@ export const useMessageLogStore = defineStore('messageLog', () => {
     }
   };
 
-  return {messages, logMessage}
+  function selectPanel(panel: string) {
+    selectedPanel.value = panel;
+  }
+
+  return {messages, logMessage, selectPanel, selectedPanel}
 });
 
 export default useMessageLogStore
