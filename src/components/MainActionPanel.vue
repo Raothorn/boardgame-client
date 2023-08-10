@@ -1,10 +1,8 @@
 <template>
-  <v-container class="fill-height my-0">
-    <v-row class="fill-height my-0">
-      <v-col cols="2" class="fill-height pl-0">
-        <div
-          class="fill-height d-flex flex-column align-center justify-space-evenly"
-        >
+  <v-card>
+    <v-container class="fill-height my-0">
+      <v-row class="fill-height my-0">
+        <v-col>
           <v-tooltip text="Travel">
             <template v-slot:activator="{ props }">
               <v-btn
@@ -16,6 +14,8 @@
               ></v-btn>
             </template>
           </v-tooltip>
+        </v-col>
+        <v-col>
           <v-tooltip text="Explore">
             <template v-slot:activator="{ props }">
               <v-btn
@@ -26,6 +26,8 @@
               ></v-btn>
             </template>
           </v-tooltip>
+        </v-col>
+        <v-col>
           <v-tooltip text="Visit Port">
             <template v-slot:activator="{ props }">
               <v-btn
@@ -36,6 +38,8 @@
               ></v-btn>
             </template>
           </v-tooltip>
+        </v-col>
+        <v-col>
           <v-tooltip text="Visit Market">
             <template v-slot:activator="{ props }">
               <v-btn
@@ -46,12 +50,10 @@
               ></v-btn>
             </template>
           </v-tooltip>
-        </div>
-      </v-col>
-      <v-col class="fill-height py-0">
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -62,11 +64,10 @@ const client = useClient();
 function selectTravelAction() {
   let msg = {
     actionType: "selectMainAction",
-    actionData: {player_ix: 0}
+    actionData: { player_ix: 0 },
   };
 
   client.sendMessage("action", msg);
   client.selectPanel("map");
 }
-
 </script>

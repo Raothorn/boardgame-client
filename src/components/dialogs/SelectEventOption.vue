@@ -29,9 +29,6 @@
       </v-row>
     </v-container>
   </v-card>
-  <v-card class="fill-height d-flex justify-center align-center" v-else>
-    Event Deck Placeholder
-  </v-card>
 </template>
 
 <script setup lang="ts">
