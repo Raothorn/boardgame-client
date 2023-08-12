@@ -9,7 +9,7 @@
           <v-sheet
             border
             rounded
-            :color="isSelectCrewMemberPhase ? 'grey-darken-2' : 'grey-darken-3'"
+            :color="selectCrewMemberPhase ? 'grey-darken-2' : 'grey-darken-3'"
             class="py-auto"
             :elevation="10"
             @click="clickAction(ix)"
@@ -89,21 +89,21 @@
       </v-list>
     </v-card>
     <v-snackbar
-      :model-value="isSelectCrewMemberPhase"
+      :model-value="selectCrewMemberPhase != null"
       location="bottom center"
-      :timeout="1000"
+      :timeout="-1"
       color="background"
       contained
     >
-      <div class="d-flex justify-center">
-        <span>Select Crew Member</span>
+      <div v-if="selectCrewMemberPhase" class="d-flex justify-center">
+        <span> {{ selectCrewMemberPhase.title }} </span>
       </div>
     </v-snackbar>
   </v-sheet>
 </template>
 
 <script setup lang="ts">
-import { Ref, computed, inject, ref } from "vue";
+import { computed, ref } from "vue";
 import SavvyIcon from "./icons/SavvyIcon.vue";
 import CraftIcon from "./icons/CraftIcon.vue";
 import StrengthIcon from "./icons/StrengthIcon.vue";
@@ -117,25 +117,23 @@ const client = useClient();
 
 const selectedCrewIx = ref(0);
 
-// const selectedCrew = computed(() => {
-//   if (crew.value.length == 0) return undefined;
-//
-//   return crew.value[selectedCrewIx.value];
-// });
-
 const crew = computed(() => {
   return client.gamestate.crew.map((crew) => {
-    // crew.name = crew.name.split(" ")[0];
     return crew;
   });
 });
 
-const isSelectCrewMemberPhase = computed(() => {
-  return "SelectCrewMemberPhase" in client.gamestate.phase;
+const selectCrewMemberPhase = computed(() => {
+  if ("SelectCrewMemberPhase" in client.gamestate.phase) {
+    return client.gamestate.phase.SelectCrewMemberPhase;
+  }
+  else {
+    return null;
+  }
 });
 
 function clickAction(ix: number) {
-  if (isSelectCrewMemberPhase.value) {
+  if (selectCrewMemberPhase.value) {
     let msg = {
       actionType: "selectCrewMemberAction",
       actionData: { crew_ix: ix, player_ix: 0 },

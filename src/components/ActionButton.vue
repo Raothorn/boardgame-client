@@ -61,7 +61,7 @@ const actionButton = computed(() => {
   // Event Phase
   else if ("EventPhase" in phase) {
     if (phase.EventPhase == null) {
-      return button("Draw Event Card", "event", drawEventCard);
+      return simpleButton("Draw event card", "event");
     } else {
       return simpleButton("Choose event option", "event");
     }
@@ -110,13 +110,6 @@ const actionButton = computed(() => {
   return { disabled: true, text: "", click: () => {}, menu: "" };
 });
 
-function drawEventCard() {
-  let actionMsg = {
-    actionType: "handleEventPhaseAction",
-    actionData: { player_ix: 0 },
-  };
-  client.sendMessage("action", actionMsg);
-}
 
 function endTurn() {
   let msg = {

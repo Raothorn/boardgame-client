@@ -18,6 +18,9 @@ export default defineConfig({
     }),
   ],
   define: { "process.env": {} },
+  optimizeDeps: {
+    exclude: ['gsap']
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
