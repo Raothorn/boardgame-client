@@ -48,7 +48,7 @@ export const useClient = defineStore("client", () => {
   }
 
   function selectPanel(panel: string) {
-    const panels = ["ship", "map", "event", "challenge", "home"];
+    const panels = ["ship", "map", "event", "challenge", "home", "storybook"];
     if (panels.includes(panel)) {
       selectedPanel.value = panel;
     }

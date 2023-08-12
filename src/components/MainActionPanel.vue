@@ -10,7 +10,7 @@
                 size="x-large"
                 icon="mdi-ship-wheel"
                 variant="tonal"
-                @click="selectTravelAction"
+                @click="selectAction('Travel')"
               ></v-btn>
             </template>
           </v-tooltip>
@@ -23,6 +23,7 @@
                 size="x-large"
                 icon="mdi-notebook"
                 variant="tonal"
+                @click="selectAction('Explore')"
               ></v-btn>
             </template>
           </v-tooltip>
@@ -61,13 +62,14 @@ import useClient from "@/stores/ClientState";
 
 const client = useClient();
 
-function selectTravelAction() {
+function selectAction(action: string) {
   let msg = {
     actionType: "selectMainAction",
-    actionData: { player_ix: 0 },
+    actionData: { main_action: action, player_ix: 0 },
   };
 
   client.sendMessage("action", msg);
   client.selectPanel("map");
 }
+
 </script>

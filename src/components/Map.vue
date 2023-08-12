@@ -7,7 +7,7 @@
       @load="mapLoad"
       :style="svg_loaded ? '' : 'visibility: hidden'"
     ></object>
-    <template v-show="!svg_loaded"> Loading... </template>
+    <template v-show="!svg_loaded">Loading...</template>
   </div>
 </template>
 
@@ -25,30 +25,36 @@ var root: Element;
 
 const svg_loaded = ref(false);
 
-
 // Computed Properties
 
 const shouldHighlightAreas = computed(() => {
   let phase = client.gamestate.phase;
   return "MainActionPhase" in phase && phase.MainActionPhase[0] == "Travel";
-})
+});
+
+const shouldHighlightPorts = computed(() => {
+  let phase = client.gamestate.phase;
+  return "MainActionPhase" in phase && phase.MainActionPhase[0] == "Explore";
+});
 
 const svg_source = computed(() => {
   let region = client.gamestate.map.current_region;
-  return `assets/maps/region${region}.svg`
+  return `assets/maps/region${region}.svg`;
 });
 
 // Watchers
 watch(
   () => client.gamestate.map.ship_area,
   (oldArea, newArea) => {
-    animateShip(oldArea, newArea, highlightAreas);
+    animateShip(oldArea, newArea, highlight);
   },
 );
 
-watch(shouldHighlightAreas, (_) => {
+watch([shouldHighlightAreas, shouldHighlightPorts], (_) => {
   highlightAreas();
+  highlightPorts();
 });
+
 
 // Functions
 function mapLoad() {
@@ -100,14 +106,43 @@ function mapLoad() {
   ship = mapSvg.findOne("#ship") as Element;
 
   let startingPos = mapSvg.findOne("#ship_zone_1") as Element;
-  ship.transform({relative: [startingPos.x() as number, startingPos.y() as number]});
+  ship.transform({
+    relative: [startingPos.x() as number, startingPos.y() as number],
+  });
 
   centerShipInViewbox();
 
-
-  highlightAreas();
+  highlight();
 
   svg_loaded.value = true;
+}
+
+function highlight() {
+  highlightPorts();
+  highlightAreas();
+}
+
+function highlightPorts() {
+  if (!mapSvg) return;
+
+  let ports = client.gamestate.map.visible_ports;
+  let adjacent_ports = client.gamestate.map.adjacent_ports;
+
+  for (let portIx of ports) {
+    let portId = `#port${portIx}`;
+    let port = mapSvg.findOne(portId) as Element;
+    console.log(portId,port)
+    if (!port) break;
+
+    if (shouldHighlightPorts.value && adjacent_ports.includes(portIx)) {
+      port.addClass("highlightedPort");
+      port.click(() => exploreAction(portIx));
+    }
+    else {
+      port.removeClass("highlightedPort")
+      port.click(null);
+    }
+  }
 }
 
 function highlightAreas() {
@@ -116,9 +151,8 @@ function highlightAreas() {
   let visibleAreas = map.visible_areas;
   let adjacentAreas = map.adjacent_areas;
 
-  let areas: [number, string][] = visibleAreas.map((a) => [a, `#area${a}`]);
-
-  for (let [areaIx, areaId] of areas) {
+  for (let areaIx of visibleAreas) {
+    let areaId = `#area${areaIx}`;
     let area = mapSvg.findOne(areaId) as Element;
     if (!area) break;
 
@@ -126,7 +160,6 @@ function highlightAreas() {
       area.addClass("available");
       area.click(() => travelAction(areaIx));
     } else {
-      console.log("removing highlight on ", areaIx)
       area.removeClass("available");
       area.click(null);
     }
@@ -140,6 +173,17 @@ function travelAction(areaIx: number) {
   };
 
   client.sendMessage("action", msg);
+}
+
+function exploreAction(portIx: number) {
+  let msg = {
+    actionType: "exploreAction",
+    actionData: { port: portIx, player_ix: 0 },
+  };
+
+  client.sendMessage("action", msg);
+  client.selectPanel("storybook");
+
 }
 
 function animateShip(oldArea: number, newArea: number, callback: () => void) {
@@ -162,7 +206,6 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
   ship.transform(new Matrix());
 
   let rootTransform = root.transform();
-
 
   let t = 0;
 
@@ -191,10 +234,7 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
 
     if (oldAngle != null) {
       try {
-        ship
-          .rotate(-oldAngle)
-          .move(point.x, point.y)
-          .rotate(angle);
+        ship.rotate(-oldAngle).move(point.x, point.y).rotate(angle);
       } catch (e) {
         // Not sure why this exception is happening. Everything seems fine.
       }
@@ -207,29 +247,28 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
 }
 
 function centerShipInViewbox() {
-    if (!ship || !root) {
-      return;
-    }
+  if (!ship || !root) {
+    return;
+  }
 
-    let viewbox = mapSvg.viewbox();
+  let viewbox = mapSvg.viewbox();
 
-    let shipY = ship.y() as number;
-    let scaleY = root.transform().scaleY
-    if (scaleY != undefined) {
-      shipY *= scaleY
-    }
-    let newY = shipY - viewbox.height / 2;
+  let shipY = ship.y() as number;
+  let scaleY = root.transform().scaleY;
+  if (scaleY != undefined) {
+    shipY *= scaleY;
+  }
+  let newY = shipY - viewbox.height / 2;
 
-    if (newY < 0) {
-      newY = 0;
-    }
-    if (newY + viewbox.height > mapHeight) {
-      newY = mapHeight - viewbox.height;
-    }
+  if (newY < 0) {
+    newY = 0;
+  }
+  if (newY + viewbox.height > mapHeight) {
+    newY = mapHeight - viewbox.height;
+  }
 
-    viewbox.y = newY;
-    mapSvg.viewbox(viewbox);
-
+  viewbox.y = newY;
+  mapSvg.viewbox(viewbox);
 }
 
 function scrollViewport(dy: number) {

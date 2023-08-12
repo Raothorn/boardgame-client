@@ -6,3 +6,12 @@
 	opacity: 0.5 !important;
 }
 
+.highlightedPort {
+	fill: black !important;
+	fill-opacity: 0 !important;
+	stroke: #FF0000 !important;
+}
+
+.highlightedPort:hover {
+	stroke-width: 30 !important;
+}

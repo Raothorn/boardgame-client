@@ -80,6 +80,8 @@ const actionButton = computed(() => {
       }
     } else if (action == "Travel") {
       return simpleButton("Select travel destination", "map");
+    } else if (action == "Explore") {
+      return simpleButton("Select port to explore", "map")
     }
   }
 
@@ -98,6 +100,11 @@ const actionButton = computed(() => {
     return button("Select Crew Member (Cancel)", "", () =>
       client.sendMessage("action", msg),
     );
+  }
+
+  // Explore phase
+  else if ("ExplorePhase" in phase) {
+    return simpleButton("Explore port", "storybook")
   }
 
   return { disabled: true, text: "", click: () => {}, menu: "" };

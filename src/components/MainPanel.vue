@@ -20,6 +20,10 @@
       <v-window-item class="fill-height" value="home">
         <HomePanel></HomePanel>
       </v-window-item>
+
+      <v-window-item class="fill-height" value="storybook">
+        Strybook placehoder
+      </v-window-item>
     </v-window>
 
   </v-sheet>

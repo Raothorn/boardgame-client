@@ -9,8 +9,7 @@ export class ClientSocket {
     this.onStateUpdate = (_) => {};
     this.socket = new WebSocket("ws://localhost:2000/");
 
-    this.socket.onopen = (_) => {
-    };
+    this.socket.onopen = (_) => {};
 
     this.socket.onmessage = (event) => {
       let msg = JSON.parse(event.data);
@@ -40,12 +39,7 @@ export type GameState = {
   phase: GamePhase;
   players: Player[];
   crew: Crew[];
-  map: {
-    ship_area: number;
-    adjacent_areas: number[];
-    visible_areas: number[];
-    current_region: number;
-  };
+  map: Map;
   resources: Record<string, number>;
   room: string;
   message_queue: ClientMessage[];
@@ -57,16 +51,26 @@ export type GamePhase =
   | { ChallengePhase: { challenge: Challenge; added: number | null } }
   | { MainActionPhase: [string | null, number] }
   | { SelectCrewMemberPhase: null }
+  | { ExplorePhase: any }
 
 
 export type ShipActionSubphase = {
-  DeckAction: { search_tokens_drawn: number[] }
+  DeckAction: { search_tokens_drawn: number[] };
+};
+
+export type Map = {
+  ship_area: number;
+  adjacent_areas: number[];
+  adjacent_ports: number[];
+  visible_areas: number[];
+  visible_ports: number[];
+  current_region: number;
 };
 
 export type EventCard = {
-  name: string
-  options: EventOption[]
-  deck_index: number
+  name: string;
+  options: EventOption[];
+  deck_index: number;
 };
 
 export type EventOption = { text: string };
@@ -74,37 +78,38 @@ export type EventOption = { text: string };
 export type Challenge = { skill: string; amount: number };
 
 export type Crew = {
-  name: string
-  fatigue: number
-  damage: number
-  skills: Record<string, number>
-  equipped_ability_cards: AbilityCard[]
+  name: string;
+  fatigue: number;
+  damage: number;
+  skills: Record<string, number>;
+  equipped_ability_cards: AbilityCard[];
 };
 
 export type ClientMessage =
   | { GainCommandPoints: { amount: number } }
-  | { DrewAbilityCard: { card: AbilityCard } }
+  | { DrewAbilityCard: { card: AbilityCard } };
 
-  export type Player = {
-    command_tokens: number
-    hand: AbilityCard[]
-  }
+export type Player = {
+  command_tokens: number;
+  hand: AbilityCard[];
+};
 
-export type AbilityCard = { name: string; deck_ix: number }
+export type AbilityCard = { name: string; deck_ix: number };
 
-export function defaultGamestate() : GameState {
+export function defaultGamestate(): GameState {
   return {
-    phase: { ShipActionPhase: null},
-    players: [ {command_tokens: 0, hand: []} ],
+    phase: { ShipActionPhase: null },
+    players: [{ command_tokens: 0, hand: [] }],
     crew: [],
     map: {
       ship_area: 0,
       adjacent_areas: [],
+      adjacent_ports: [],
       visible_areas: [],
-      current_region: 0
+      current_region: 0,
     },
     resources: {},
     room: "",
-    message_queue: []
+    message_queue: [],
   };
 }
