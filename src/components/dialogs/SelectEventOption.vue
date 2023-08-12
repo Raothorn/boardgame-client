@@ -8,7 +8,7 @@
           </v-card-item>
         </v-col>
         <v-col cols="4" md="6">
-          <div class="fill-height d-flex flex-column justify-space-evenly">
+          <div v-if="'EventPhase' in client.gamestate.phase" class="fill-height d-flex flex-column justify-space-evenly">
             <template v-for="(option, ix) in event.options">
               <v-btn
                 @click="optionSelected(ix)"
@@ -32,17 +32,28 @@
 </template>
 
 <script setup lang="ts">
+import { EventCard } from "@/client_socket";
 import useClient from "@/stores/ClientState";
-import { computed, } from "vue";
+import { Ref, onMounted, ref, watch } from "vue";
 
 const client = useClient();
 
-const event = computed(() => {
-  let phase = client.gamestate.phase;
-  if (!("EventPhase" in phase)) {
-    return null;
+const event: Ref<EventCard | null> = ref(null)
+
+watch (
+  () => client.gamestate.phase,
+  (newPhase) => {
+    if ("EventPhase" in newPhase) {
+      event.value = newPhase.EventPhase;
+      client.playSound("flipcard");
+    }
   }
-  return phase.EventPhase;
+);
+
+onMounted(() => {
+  if ("EventPhase" in client.gamestate.phase) {
+    event.value = client.gamestate.phase.EventPhase;
+  }
 });
 
 function optionSelected(optionIx: number) {

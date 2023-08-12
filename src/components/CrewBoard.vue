@@ -3,7 +3,7 @@
     <v-card id="crew_card" class="fill-height w-100" border>
       <v-list class="fill-height d-flex flex-column justify-start">
         <v-list-item
-          v-for="(crew_member, ix) in crew"
+          v-for="(crewMember, ix) in crew"
           @click="selectedCrewIx = ix"
         >
           <v-sheet
@@ -15,32 +15,54 @@
             @click="clickAction(ix)"
           >
             <v-container fluid class="py-0">
-              <v-row class="d-flex justify-start align-center">
-                <v-col cols="4">
-                  <v-card-item>
-                    <h4>
-                      {{ crew_member.name.split(" ")[0] }}
-                    </h4>
-                  </v-card-item>
+              <v-row class="d-flex justify-start align-center crew-member">
+                <v-col cols="2">
+                  <img
+                    :src="`/assets/crew_portraits/${firstName(crewMember)}.png`"
+                    width="30"
+                  />
                 </v-col>
-                <v-divider :vertical="true"></v-divider>
-                <v-col cols="6">
-                  <div class="d-flex justify-start">
-                    <template v-for="(amount, name) in crew_member.skills">
-                      <span v-if="amount > 0">
-                        <component
-                          class="mx-1"
-                          :is="skillIcon(name)"
-                        ></component>
-                      </span>
-                      <span v-if="amount > 1">x{{ amount }}</span>
-                    </template>
-                  </div>
+                <v-col cols="">
+                  <v-container>
+                    <v-row>
+                      <div class="d-flex justify-start">
+                        <template v-for="(amount, name) in crewMember.skills">
+                          <span v-if="amount > 0">
+                            <component
+                              class="mx-1"
+                              :is="skillIcon(name)"
+                            ></component>
+                          </span>
+                          <span v-if="amount > 1">x{{ amount }}</span>
+                        </template>
+                      </div>
+                    </v-row>
+                    <v-row>
+                      <div class="d-flex justify-start">
+                        <v-icon
+                          v-if="crewMember.status.includes('Venom')"
+                          icon="mdi-water"
+                          color="green-darken-4"
+                        ></v-icon>
+                        <v-icon
+                          v-if="crewMember.status.includes('LowMorale')"
+                          size="small"
+                          icon="mdi-thumb-down"
+                          color="red-darken-4"
+                        ></v-icon>
+                      </div>
+                    </v-row>
+                  </v-container>
                 </v-col>
                 <v-col cols="2">
-                  <div class="d-flex justify-end">
+                  <v-badge color="red-darken-2" :content="crewMember.damage">
+                    <v-icon icon="mdi-heart" color="red-darken-4"></v-icon>
+                  </v-badge>
+                </v-col>
+                <v-col cols="2">
+                  <div class="d-flex flex-column justify-end">
                     <template
-                      v-for="card in crew_member.equipped_ability_cards"
+                      v-for="card in crewMember.equipped_ability_cards"
                     >
                       <v-menu open-on-hover open-delay="100">
                         <template v-slot:activator="{ props }">
@@ -89,6 +111,7 @@ import PerceptionIcon from "./icons/PerceptionIcon.vue";
 import WitsIcon from "./icons/WitsIcon.vue";
 import { VContainer } from "vuetify/lib/components/index.mjs";
 import useClient from "@/stores/ClientState";
+import { Crew } from "@/client_socket";
 
 const client = useClient();
 
@@ -119,6 +142,8 @@ function clickAction(ix: number) {
     };
 
     client.sendMessage("action", msg);
+  } else {
+    client.selectedItem = { crewIx: ix };
   }
 }
 
@@ -130,11 +155,19 @@ function skillIcon(name: string) {
   else if (name == "Wits") return WitsIcon;
   else return VContainer;
 }
+
+function firstName(crew: Crew) {
+  return crew.name.split(" ")[0].toLowerCase();
+}
 </script>
 
 <style scoped>
 #crew_card {
   /* height: 400px; */
   overflow-y: auto;
+}
+
+.crew-member {
+  min-height: 90px;
 }
 </style>

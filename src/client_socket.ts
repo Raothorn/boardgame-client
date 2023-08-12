@@ -48,20 +48,20 @@ export type GameState = {
 export type GamePhase =
   | { ShipActionPhase: ShipActionSubphase | null }
   | { EventPhase: EventCard | null }
-  | { ChallengePhase: { challenge: Challenge; skill: number | null } }
+  | { ChallengePhase: ChallengePhase }
   | { MainActionPhase: [string | null, number] }
-  | { SelectCrewMemberPhase: { crew_ix: number, title: string } }
+  | { SelectCrewMemberPhase: { crew_ix: number; title: string } }
   | { ExplorePhase: Story }
-  | { ResolveEffectPhase: Effect }
+  | { ResolveEffectPhase: Effect };
 
 
 export type ShipActionSubphase = {
   DeckAction: { search_tokens_drawn: number[] };
 };
 
-export type Effect =
-  | { TakeHealthDamage: number }
 
+export type ChallengePhase = { challenge: Challenge; skill: number | null };
+export type Effect = { TakeHealthDamage: number };
 
 export type Map = {
   ship_area: number;
@@ -80,11 +80,11 @@ export type EventCard = {
 
 export type EventOption = { text: string };
 
-export type Challenge = { skill: string; amount: number };
+export type Challenge = { skill: string; label: string, amount: number };
 
 export type Story = {
-  main_text: string,
-  options: { text: string }[]
+  main_text: string;
+  options: { text: string }[];
 };
 
 export type Crew = {
@@ -93,6 +93,7 @@ export type Crew = {
   damage: number;
   skills: Record<string, number>;
   equipped_ability_cards: AbilityCard[];
+  status: string[]
 };
 
 export type ClientMessage =

@@ -1,61 +1,79 @@
 <template>
-  <v-card class="fill-height d-flex flex-column justify-center align-center">
-    <v-card-title>
-      <div class="d-flex justify-space-between">
-        <span>{{ challenge.skill }} Challenge: {{ challenge.amount }}</span>
-      </div>
-    </v-card-title>
-    <v-card-subtitle>
-        <span
-          :style="{ color: totalSkill < challenge.amount ? 'red' : 'green' }"
+  <v-container>
+    <v-row>
+      <v-col>
+        <v-card
+          class="fill-height d-flex flex-column justify-center align-center"
+          :elevation="0"
         >
-          Total: {{ crewSkill }} +
-        </span>
-    </v-card-subtitle>
-    <v-card-item>
-      <v-sheet :elevation="13" border rounded>
-        <v-list >
-          <template v-for="(crew, ix) in crew_members">
-            <v-list-item v-if="crew.skill > 0">
-              <v-checkbox
-                v-model="selectedCrew"
-                :value="ix"
-                hide-details
-                density="compact"
-                >
-                <template v-slot:label>
-                  {{crew.name}} {{crew.skill}}
-                </template>
-              </v-checkbox>
-            </v-list-item>
-          </template>
-        </v-list>
-      </v-sheet>
-    </v-card-item>
-    <v-card-actions>
-      <v-btn
-        v-if="!challengePhase.skill"
-        variant="tonal"
-        color="primary"
-        @click="resolveChallenge"
-        size="x-large"
-        class="mx-auto"
-      >
-        Resolve Challenge
-      </v-btn>
-      <v-btn v-else variant="tonal" width="100%" @click="acceptResult">
-        {{ totalSkill >= challenge.amount ? "Success!" : "Failure..." }}
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+          <v-card-title>
+            <div class="d-flex justify-space-between">
+              <span>
+                {{ challenge.skill }} Challenge: {{ crewSkill }} + {{ fate }} /
+                {{ challenge.amount }}
+              </span>
+            </div>
+          </v-card-title>
+          <v-card-subtitle>
+            <div v-html="challenge.label"></div>
+          </v-card-subtitle>
+          <v-card-item>
+            <v-list>
+              <template v-for="(crew, ix) in crew_members">
+                <v-list-item v-if="crew.skill > 0">
+                  <v-checkbox
+                    v-model="selectedCrew"
+                    :value="ix"
+                    hide-details
+                    density="compact"
+                    :disabled="challengePhase.skill != null"
+                    >
+                    <template v-slot:label>
+                      {{ crew.name }} {{ crew.skill }}
+                    </template>
+                  </v-checkbox>
+                </v-list-item>
+              </template>
+            </v-list>
+          </v-card-item>
+          <v-card-actions>
+            <v-btn
+              v-if="challengePhase.skill == null"
+              variant="tonal"
+              color="primary"
+              @click="resolveChallenge"
+              size="x-large"
+              class="mx-auto"
+            >
+              Draw Fate
+            </v-btn>
+            <v-btn
+              v-else-if="'ChallengePhase' in client.gamestate.phase"
+              variant="tonal"
+              width="100%"
+              @click="acceptResult"
+            >
+              {{ totalSkill >= challenge.amount ? "Success!" : "Failure..." }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup lang="ts">
-import useClientStore from "@/stores/ClientState";
-import { Ref, computed, inject, ref } from "vue";
+import { ChallengePhase } from "@/client_socket";
+import useClient from "@/stores/ClientState";
+import { Ref, computed, inject, ref, watch, onMounted } from "vue";
 
-const client = useClientStore();
+const client = useClient();
 const selectedCrew = ref([]);
+
+const challengePhase: Ref<ChallengePhase> = ref({
+  challenge: { skill: "noskill", label: "", amount: 0 },
+  skill: null,
+});
 
 function resolveChallenge() {
   let actionMessage = {
@@ -72,15 +90,22 @@ function acceptResult() {
     actionData: { player_ix: 0 },
   };
   client.sendMessage("action", actionMessage);
-  client.selectPanel("home");
 }
 
-const challengePhase = computed(() => {
-  let phase = client.gamestate.phase;
-  if (phase == undefined || !("ChallengePhase" in phase))
-    return { challenge: { skill: "noskill", amount: 0 }, skill: 0 };
+// Latch on to the most recent value
+watch(
+  () => client.gamestate.phase,
+  (newPhase) => {
+    if ("ChallengePhase" in newPhase) {
+      challengePhase.value = newPhase.ChallengePhase;
+    }
+  },
+);
 
-  return phase.ChallengePhase;
+onMounted(() => {
+  if ("ChallengePhase" in client.gamestate.phase) {
+    challengePhase.value = client.gamestate.phase.ChallengePhase;
+  }
 });
 
 const challenge = computed(() => {
@@ -107,9 +132,18 @@ const crewSkill = computed(() => {
   return total;
 });
 
+// const currentSkill = computed(() => {
+// })
+const fate = computed(() => {
+  if (challengePhase.value.skill != null) {
+    return (challengePhase.value.skill - crewSkill.value).toString();
+  } else {
+    return "?";
+  }
+});
+
 const totalSkill = computed(() => {
-  let total = crewSkill.value;
-  if (challengePhase.value.skill) total += challengePhase.value.skill;
-  return total;
+  if (challengePhase.value.skill) return challengePhase.value.skill;
+  else return crewSkill;
 });
 </script>

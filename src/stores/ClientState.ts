@@ -56,6 +56,11 @@ export const useClient = defineStore("client", () => {
     }
   }
 
+  function playSound(sound: string) {
+    const audio = new Audio(`/assets/audio/${sound}.mp3`);
+    audio.play();
+  }
+
   return {
     messages,
     logMessage,
@@ -65,6 +70,7 @@ export const useClient = defineStore("client", () => {
     sendMessage,
     gamestate,
     settings,
+    playSound,
   };
 });
 

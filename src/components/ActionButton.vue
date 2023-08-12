@@ -120,7 +120,7 @@ function drawEventCard() {
 
 function endTurn() {
   let msg = {
-    actionType: "selectMainAction",
+    actionType: "endTurnAction",
     actionData: { player_ix: 0 },
   };
   client.sendMessage("action", msg);
