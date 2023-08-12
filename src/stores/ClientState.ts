@@ -32,6 +32,8 @@ export const useClient = defineStore("client", () => {
   // Global UI state
   const selectedPanel = ref("home");
 
+  const selectedItem:Ref<Selectable> = ref({crewIx: 0});
+
   // Messages
   const messages: Ref<string[]> = ref([]);
   function logMessage(message: ClientMessage) {
@@ -59,11 +61,14 @@ export const useClient = defineStore("client", () => {
     logMessage,
     selectPanel,
     selectedPanel,
+    selectedItem,
     sendMessage,
     gamestate,
     settings,
   };
 });
+
+export type Selectable = {crewIx: number} | null
 
 export type ClientSettings = {
   debugMode: boolean;

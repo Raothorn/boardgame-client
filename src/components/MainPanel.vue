@@ -22,7 +22,7 @@
       </v-window-item>
 
       <v-window-item class="fill-height" value="storybook">
-        Strybook placehoder
+        <Storybook></Storybook>
       </v-window-item>
     </v-window>
 
@@ -35,6 +35,7 @@ import Map from './Map.vue'
 import ResolveChallenge from './dialogs/ResolveChallenge.vue'
 import SelectEventOption from "./dialogs/SelectEventOption.vue";
 import HomePanel from './HomePanel.vue'
+import Storybook from './Storybook.vue'
 import { computed, watch } from "vue";
 import { useClient } from "@/stores/ClientState";
 

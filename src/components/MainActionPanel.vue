@@ -71,5 +71,4 @@ function selectAction(action: string) {
   client.sendMessage("action", msg);
   client.selectPanel("map");
 }
-
 </script>

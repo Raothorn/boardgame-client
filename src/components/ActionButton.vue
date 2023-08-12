@@ -97,9 +97,9 @@ const actionButton = computed(() => {
       actionData: { crew_ix: null, player_ix: 0 },
     };
 
-    return button("Select Crew Member (Cancel)", "", () =>
-      client.sendMessage("action", msg),
-    );
+    return button(phase.SelectCrewMemberPhase.title, "", () => {});
+    //   client.sendMessage("action", msg),
+    // );
   }
 
   // Explore phase

@@ -1,19 +1,18 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="3">
+      <v-col cols="2">
         <v-card :elevation="5" color="grey-darken-3">
           <v-card-title>Ship</v-card-title>
           <v-card-item>
             <div class="d-flex flex-column">
-              <span>Coins: {{ client.gamestate.resources["coins"] }}</span>
-              <span>Meat: {{ client.gamestate.resources["meat"] }}</span>
-              <span>Grain: {{ client.gamestate.resources["grain"] }}</span>
+              <span>Coins: {{ client.gamestate.resources["Coin"] }}</span>
+              <span>Meat: {{ client.gamestate.resources["Meat"] }}</span>
             </div>
           </v-card-item>
         </v-card>
       </v-col>
-      <v-col>
+      <v-col cols="10">
         <v-card :elevation="5" color="grey-darken-3">
           <v-card-title>Player</v-card-title>
           <v-card-item>

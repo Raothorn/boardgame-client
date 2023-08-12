@@ -10,7 +10,6 @@
           :style="{ color: totalSkill < challenge.amount ? 'red' : 'green' }"
         >
           Total: {{ crewSkill }} +
-          {{ challengePhase.added ? challengePhase.added : "?" }}
         </span>
     </v-card-subtitle>
     <v-card-item>
@@ -22,7 +21,6 @@
                 v-model="selectedCrew"
                 :value="ix"
                 hide-details
-                :disabled="challengePhase.added != null || crew.skill < 1"
                 density="compact"
                 >
                 <template v-slot:label>
@@ -36,7 +34,7 @@
     </v-card-item>
     <v-card-actions>
       <v-btn
-        v-if="!challengePhase.added"
+        v-if="!challengePhase.skill"
         variant="tonal"
         color="primary"
         @click="resolveChallenge"
@@ -80,7 +78,7 @@ function acceptResult() {
 const challengePhase = computed(() => {
   let phase = client.gamestate.phase;
   if (phase == undefined || !("ChallengePhase" in phase))
-    return { challenge: { skill: "noskill", amount: 0 }, added: 0 };
+    return { challenge: { skill: "noskill", amount: 0 }, skill: 0 };
 
   return phase.ChallengePhase;
 });
@@ -111,7 +109,7 @@ const crewSkill = computed(() => {
 
 const totalSkill = computed(() => {
   let total = crewSkill.value;
-  if (challengePhase.value.added) total += challengePhase.value.added;
+  if (challengePhase.value.skill) total += challengePhase.value.skill;
   return total;
 });
 </script>

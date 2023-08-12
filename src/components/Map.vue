@@ -131,7 +131,6 @@ function highlightPorts() {
   for (let portIx of ports) {
     let portId = `#port${portIx}`;
     let port = mapSvg.findOne(portId) as Element;
-    console.log(portId,port)
     if (!port) break;
 
     if (shouldHighlightPorts.value && adjacent_ports.includes(portIx)) {

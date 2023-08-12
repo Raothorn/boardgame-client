@@ -11,12 +11,13 @@
 
 <script setup lang="ts">
 import SelectDiscardForGalleyDialog from "./dialogs/SelectDiscardForGalleyDialog.vue";
-import { Ref, computed, inject } from "vue";
+import { computed } from "vue";
 import DrawForDeckAction from "./dialogs/DrawForDeckAction.vue";
-import SelectEventOption from "./dialogs/SelectEventOption.vue";
-import ResolveChallenge from "./dialogs/ResolveChallenge.vue";
+import DistributeHealthDamage from "./dialogs/DistributeHealthDamage.vue"
+import TakeStatus from "./dialogs/TakeStatus.vue";
 import MessageDialog from "./dialogs/MessageDialog.vue";
 import useClient from "@/stores/ClientState";
+import { VBtn } from "vuetify/lib/components/index.mjs";
 
 const client = useClient();
 
@@ -38,6 +39,18 @@ const promptComponent = computed(() => {
       }
     } else if ("DeckAction" in phase.ShipActionPhase) {
       return DrawForDeckAction;
+    }
+  }
+  else if ("ResolveEffectPhase" in phase) {
+    if ("TakeHealthDamage" in phase.ResolveEffectPhase) {
+      return DistributeHealthDamage;
+    }
+    else if ("TakeStatus" in phase.ResolveEffectPhase) {
+      return TakeStatus;
+    }
+    else {
+      console.log("implement dialog");
+      return VBtn;
     }
   }
   return null;
