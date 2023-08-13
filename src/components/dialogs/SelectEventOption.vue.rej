@@ -1,0 +1,144 @@
+diff a/src/components/dialogs/SelectEventOption.vue b/src/components/dialogs/SelectEventOption.vue	(rejected hunks)
+@@ -1,55 +1,106 @@
+ <template>
+-  <v-card v-if="event" class="fill-height">
+-    <v-container>
+-      <v-row>
+-        <v-col cols="8" md="6">
+-          <v-card-item class="d-flex justify-center">
+-            <img :src="`../../assets/event_deck/${event.deck_index}.png`" />
+-          </v-card-item>
+-        </v-col>
+-        <v-col cols="4" md="6">
+-          <div v-if="'EventPhase' in client.gamestate.phase" class="fill-height d-flex flex-column justify-space-evenly">
+-            <template v-for="(option, ix) in event.options">
+-              <v-btn
+-                @click="optionSelected(ix)"
+-                color="primary"
+-                size="x-large"
+-                variant="tonal"
+-              >
+-                <template v-if="$vuetify.display.mdAndUp">
+-                  {{ option.text }}
+-                </template>
+-                <template v-else>
+-                  Option {{ ix + 1 }}
+-                </template>
+-              </v-btn>
+-            </template>
+-          </div>
+-        </v-col>
+-      </v-row>
+-    </v-container>
+-  </v-card>
++  <v-container class="fill-height">
++    <v-row class="fill-height">
++      <div class="fill-height my-auto" v-if="event == null">
++        <img
++          class="card"
++          src="/assets/event_deck/back.png"
++          @click="drawEventCard"
++        />
++        <img
++          class="deck"
++          src="/assets/event_deck/back.png"
++          @click="drawEventCard"
++        />
++      </div>
++      <div class="fill-height" v-else>
++        <img
++          class="card_shifted"
++          :src="`/assets/event_deck/${event.deck_index}.png`"
++          @click="drawEventCard"
++          @load="cardFlipIn()"
++        />
++        <div
++          v-if="actualEvent"
++          id="options_pane"
++          class="deck fill-height d-flex flex-column justify-space-evenly"
++        >
++          <template v-for="(option, ix) in event.options">
++            <v-btn
++              @click="optionSelected(ix)"
++              color="primary"
++              size="x-large"
++              variant="tonal"
++            >
++              <template v-if="$vuetify.display.mdAndUp">
++                {{ option.text }}
++              </template>
++              <template v-else>Option {{ ix + 1 }}</template>
++            </v-btn>
++          </template>
++        </div>
++        <!-- </v-col> -->
++      </div>
++    </v-row>
++  </v-container>
+ </template>
+ 
+ <script setup lang="ts">
+ import { EventCard } from "@/client_socket";
+ import useClient from "@/stores/ClientState";
+-import { Ref, onMounted, ref, watch } from "vue";
++import { Ref, computed, onMounted, ref, watch } from "vue";
++import { gsap } from "gsap";
+ 
+ const client = useClient();
+ 
+-const event: Ref<EventCard | null> = ref(null)
++const event: Ref<EventCard | null> = ref(null);
+ 
+-watch (
++// We distinguish between the "actual" event and the cached version.
++// We need both.
++const actualEvent = computed(() => {
++  let phase = client.gamestate.phase;
++
++  if ("EventPhase" in phase && phase.EventPhase != null) {
++    return phase.EventPhase;
++  } else {
++    return null;
++  }
++});
++
++watch(
+   () => client.gamestate.phase,
+   (newPhase) => {
+     if ("EventPhase" in newPhase) {
+-      event.value = newPhase.EventPhase;
+-      client.playSound("flipcard");
++      if (newPhase.EventPhase != null) {
++        let tl = gsap.timeline();
++        client.playSound("flipcard");
++        tl.to(".card", {
++          duration: 0.5,
++          left: 100,
++          scaleX: 0,
++        });
++        tl.to(".deck", {
++          opacity: 0,
++        });
++
++        tl.call(() => {
++          event.value = newPhase.EventPhase;
++        });
++      } else {
++        event.value = null;
++      }
+     }
+-  }
++  },
+ );
+ 
++function cardFlipIn() {
++  console.log("flipping")
++  gsap.to(".card_shifted", {
++    duration: 0.5,
++    scaleX: 1,
++  });
++}
++
+ onMounted(() => {
+   if ("EventPhase" in client.gamestate.phase) {
+     event.value = client.gamestate.phase.EventPhase;

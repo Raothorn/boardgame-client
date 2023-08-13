@@ -119,20 +119,4 @@ img {
   width: auto;
   height: 400px;
 }
-
-.card {
-  position: absolute;
-  right: 100px;
-}
-
-.card_shifted {
-  position: absolute;
-  transform: scaleX(0);
-  left: 100px;
-}
-
-.deck {
-  position: absolute;
-  right: 100px;
-}
 </style>
