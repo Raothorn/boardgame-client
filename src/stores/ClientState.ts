@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Ref, computed, ref } from "vue";
+import { Ref, computed, ref, watch } from "vue";
 import ClientSocket, {
   ClientMessage,
   GameState,
@@ -32,23 +32,12 @@ export const useClient = defineStore("client", () => {
   // Global UI state
   const selectedPanel = ref("home");
 
-  const selectedItem:Ref<Selectable> = ref({crewIx: 0});
+  const selectedItem: Ref<Selectable> = ref({ crewIx: 0 });
 
   // Messages
-  const messages: Ref<string[]> = ref([]);
+  const messages: Ref<ClientMessage[]> = ref([]);
   function logMessage(message: ClientMessage) {
-    let msgStr;
-    if ("GainCommandPoints" in message) {
-      let pts = message.GainCommandPoints.amount;
-      msgStr = `You gained ${pts} command points.`;
-    } else if ("DrewAbilityCard" in message) {
-      msgStr = `You drew a card.`;
-    } else if ("DrewFate" in message) {
-      msgStr = `Fate draw: ${message.DrewFate.result}`
-    }
-    if (msgStr != undefined) {
-      messages.value.push(msgStr);
-    }
+    messages.value.push(message);
   }
 
   function selectPanel(panel: string) {
@@ -76,7 +65,7 @@ export const useClient = defineStore("client", () => {
   };
 });
 
-export type Selectable = {crewIx: number} | null
+export type Selectable = { crewIx: number } | null;
 
 export type ClientSettings = {
   debugMode: boolean;

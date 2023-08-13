@@ -50,6 +50,12 @@
                           icon="mdi-thumb-down"
                           color="red-darken-4"
                         ></v-icon>
+                        <v-icon
+                          v-if="crewMember.status.includes('Madness')"
+                          size="small"
+                          icon="mdi-debian"
+                          color="purple-darken-4"
+                        ></v-icon>
                       </div>
                     </v-row>
                   </v-container>
@@ -61,9 +67,7 @@
                 </v-col>
                 <v-col cols="2">
                   <div class="d-flex flex-column justify-end">
-                    <template
-                      v-for="card in crewMember.equipped_ability_cards"
-                    >
+                    <template v-for="card in crewMember.equipped_ability_cards">
                       <v-menu open-on-hover open-delay="100">
                         <template v-slot:activator="{ props }">
                           <v-icon
@@ -96,7 +100,7 @@
       contained
     >
       <div v-if="selectCrewMemberPhase" class="d-flex justify-center">
-        <span> {{ selectCrewMemberPhase.title }} </span>
+        <span>{{ selectCrewMemberPhase.title }}</span>
       </div>
     </v-snackbar>
   </v-sheet>
@@ -124,10 +128,13 @@ const crew = computed(() => {
 });
 
 const selectCrewMemberPhase = computed(() => {
-  if ("SelectCrewMemberPhase" in client.gamestate.phase) {
+  // Don't prompt anything unless messages are cleared
+  if (
+    client.gamestate.message_queue.length == 0 &&
+    "SelectCrewMemberPhase" in client.gamestate.phase
+  ) {
     return client.gamestate.phase.SelectCrewMemberPhase;
-  }
-  else {
+  } else {
     return null;
   }
 });

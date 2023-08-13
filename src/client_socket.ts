@@ -42,6 +42,7 @@ export type GameState = {
   map: Map;
   resources: Record<string, number>;
   room: string;
+  keywords: string[];
   message_queue: ClientMessage[];
 };
 
@@ -54,11 +55,9 @@ export type GamePhase =
   | { ExplorePhase: Story }
   | { ResolveEffectPhase: Effect };
 
-
 export type ShipActionSubphase = {
   DeckAction: { search_tokens_drawn: number[] };
 };
-
 
 export type ChallengePhase = { challenge: Challenge; skill: number | null };
 export type Effect = { TakeHealthDamage: number };
@@ -80,11 +79,17 @@ export type EventCard = {
 
 export type EventOption = { text: string };
 
-export type Challenge = { skill: string; label: string, amount: number };
+export type Challenge = { skill: string; label: string; amount: number };
 
 export type Story = {
   main_text: string;
-  options: { text: string }[];
+  options: StoryOption[];
+};
+
+export type StoryOption = {
+  text: string;
+  required_keyword: string | null;
+  forbidden_keyword: string | null;
 };
 
 export type Crew = {
@@ -93,13 +98,16 @@ export type Crew = {
   damage: number;
   skills: Record<string, number>;
   equipped_ability_cards: AbilityCard[];
-  status: string[]
+  status: string[];
 };
 
 export type ClientMessage =
   | { GainCommandPoints: { amount: number } }
-  | { DrewAbilityCard: { card: AbilityCard } }
+  | { DrewAbilityCard: { card: SerialCard } }
   | { DrewFate: { result: number } }
+  | { ModifierTriggered: { text: string; card: SerialCard } };
+
+export type SerialCard = { label: string; deck: string; index: number };
 
 export type Player = {
   command_tokens: number;

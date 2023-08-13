@@ -7,7 +7,7 @@
             <p v-html="story.main_text"></p>
             <v-radio-group v-model="selectedOption">
               <div v-for="(option, ix) in story.options">
-                <v-radio :label="option.text" :value="ix"></v-radio>
+                <v-radio :label="option.text" :value="ix" :disabled="isDisabled(option)"></v-radio>
               </div>
             </v-radio-group>
           </v-card-item>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { Story } from "@/client_socket";
+import { Story, StoryOption } from "@/client_socket";
 import useClient from "@/stores/ClientState";
 import { Ref, ref, watch, onMounted } from "vue";
 
@@ -55,6 +55,17 @@ onMounted(() => {
     story.value = phase.ExplorePhase;
   }
 });
+
+function isDisabled(option: StoryOption) {
+  let keywords = client.gamestate.keywords;
+  if (option.required_keyword != null && !keywords.includes(option.required_keyword)) {
+    return true;
+  } else if (option.forbidden_keyword != null && keywords.includes(option.forbidden_keyword)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function selectOption() {
   let msg = {

@@ -1,29 +1,52 @@
 <template>
   <v-sheet>
     <v-dialog :model-value="true" width="unset" persistent>
-      <v-card>
-        <v-card-title v-if="'GainCommandPoints' in message">
+      <v-card v-if="'GainCommandPoints' in message">
+        <v-card-title>
           You gained {{ message.GainCommandPoints.amount }} tokens!
         </v-card-title>
+        <v-card-actions>
+          <v-btn class="w-100" @click="accept">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
 
-        <template v-else-if="'DrewAbilityCard' in message">
-          <v-card-title>
-            You drew: {{ message.DrewAbilityCard.card.name }}
-          </v-card-title>
-          <v-card-item>
+      <v-card v-else-if="'DrewAbilityCard' in message">
+        <v-card-title>
+          You drew: {{ message.DrewAbilityCard.card.label }}
+        </v-card-title>
+        <v-card-item>
+          <img
+            :src="`../../assets/ability_card_deck/${message.DrewAbilityCard.card.index}.png`"
+            width="180"
+          />
+        </v-card-item>
+        <v-card-actions>
+          <v-btn class="w-100" @click="accept">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+
+      <v-card v-else-if="'DrewFate' in message">
+        <v-card-title>Fate draw: {{ message.DrewFate.result }}</v-card-title>
+        <v-card-actions>
+          <v-btn class="w-100" @click="accept">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+
+      <v-card v-else-if="'ModifierTriggered' in message" style="max-width: 300px">
+        <v-card-title>
+          {{ message.ModifierTriggered.card.label }} triggered
+        </v-card-title>
+        <v-card-item>
+          <div class="d-flex flex-column align-center">
+            <span class="text-center">
+              {{ message.ModifierTriggered.text }}
+            </span>
             <img
-              :src="`../../assets/ability_card_deck/${message.DrewAbilityCard.card.deck_ix}.png`"
+              :src="cardImgSrc(message.ModifierTriggered.card)"
               width="180"
             />
-          </v-card-item>
-        </template>
-
-        <template v-else-if="'DrewFate' in message">
-          <v-card-title>
-            Fate draw: {{ message.DrewFate.result }}
-          </v-card-title>
-        </template>
-
+          </div>
+        </v-card-item>
         <v-card-actions>
           <v-btn class="w-100" @click="accept">Ok</v-btn>
         </v-card-actions>
@@ -35,7 +58,7 @@
 <script setup lang="ts">
 import { inject } from "vue";
 import { useClient } from "@/stores/ClientState";
-import { ClientMessage } from "@/client_socket";
+import { ClientMessage, SerialCard } from "@/client_socket";
 
 const client = useClient();
 
@@ -51,5 +74,10 @@ function accept() {
 
   client.logMessage(props.message);
   client.sendMessage("action", msg);
+}
+
+function cardImgSrc(card: SerialCard) {
+  let cardImgSrc = `/assets/${card["deck"]}/${card["index"]}.png`;
+  return cardImgSrc;
 }
 </script>

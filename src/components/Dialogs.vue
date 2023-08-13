@@ -22,6 +22,7 @@ import { VBtn } from "vuetify/lib/components/index.mjs";
 const client = useClient();
 
 const message = computed(() => {
+  // Quiet notifications
   if (client.gamestate.message_queue.length == 0) {
     return null;
   } else {

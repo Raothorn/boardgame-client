@@ -104,6 +104,7 @@ function mapLoad() {
 
   // Ship setup
   ship = mapSvg.findOne("#ship") as Element;
+  ship.transform(new Matrix)
 
   let startingPos = mapSvg.findOne("#ship_zone_1") as Element;
   ship.transform({
@@ -235,7 +236,6 @@ function animateShip(oldArea: number, newArea: number, callback: () => void) {
       try {
         ship.rotate(-oldAngle).move(point.x, point.y).rotate(angle);
       } catch (e) {
-        // Not sure why this exception is happening. Everything seems fine.
       }
     }
 
@@ -257,6 +257,7 @@ function centerShipInViewbox() {
   if (scaleY != undefined) {
     shipY *= scaleY;
   }
+
   let newY = shipY - viewbox.height / 2;
 
   if (newY < 0) {
@@ -265,6 +266,7 @@ function centerShipInViewbox() {
   if (newY + viewbox.height > mapHeight) {
     newY = mapHeight - viewbox.height;
   }
+  console.log(newY)
 
   viewbox.y = newY;
   mapSvg.viewbox(viewbox);

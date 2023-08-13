@@ -74,7 +74,9 @@
 
         <v-col cols="9">
           <v-virtual-scroll class="message_scroll" :items="client.messages">
-            <template v-slot:default="{ item }">> {{ item }}</template>
+            <template v-slot:default="{ item }">
+              <Message :message="item"></Message>
+            </template>
           </v-virtual-scroll>
         </v-col>
         <v-col cols="2" class="mx-auto">
@@ -88,6 +90,7 @@
 <script setup lang="ts">
 import useClient from "../stores/ClientState";
 import ActionButton from "./ActionButton.vue"
+import Message from './Message.vue'
 
 const client = useClient();
 
