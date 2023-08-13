@@ -7,13 +7,21 @@
         </v-card-title>
 
         <template v-else-if="'DrewAbilityCard' in message">
-          <v-card-title>You drew: {{ message.DrewAbilityCard.card.name }} </v-card-title>
+          <v-card-title>
+            You drew: {{ message.DrewAbilityCard.card.name }}
+          </v-card-title>
           <v-card-item>
             <img
               :src="`../../assets/ability_card_deck/${message.DrewAbilityCard.card.deck_ix}.png`"
               width="180"
             />
           </v-card-item>
+        </template>
+
+        <template v-else-if="'DrewFate' in message">
+          <v-card-title>
+            Fate draw: {{ message.DrewFate.result }}
+          </v-card-title>
         </template>
 
         <v-card-actions>
@@ -26,7 +34,7 @@
 
 <script setup lang="ts">
 import { inject } from "vue";
-import  { useClient } from "@/stores/ClientState"
+import { useClient } from "@/stores/ClientState";
 import { ClientMessage } from "@/client_socket";
 
 const client = useClient();

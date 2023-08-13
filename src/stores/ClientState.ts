@@ -43,6 +43,8 @@ export const useClient = defineStore("client", () => {
       msgStr = `You gained ${pts} command points.`;
     } else if ("DrewAbilityCard" in message) {
       msgStr = `You drew a card.`;
+    } else if ("DrewFate" in message) {
+      msgStr = `Fate draw: ${message.DrewFate.result}`
     }
     if (msgStr != undefined) {
       messages.value.push(msgStr);

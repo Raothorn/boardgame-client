@@ -4,7 +4,6 @@
       <div class="fill-height my-auto" v-if="event == null">
         <img
           class="card"
-          src="/assets/event_deck/back.png"
           @click="drawEventCard"
         />
         <img
@@ -18,7 +17,6 @@
           class="card_shifted"
           :src="`/assets/event_deck/${event.deck_index}.png`"
           @click="drawEventCard"
-          @load="cardFlipIn()"
         />
         <div
           v-if="actualEvent"
@@ -77,7 +75,6 @@ watch(
         tl.to(".card", {
           duration: 0.5,
           left: 100,
-          scaleX: 0,
         });
         tl.to(".deck", {
           opacity: 0,
@@ -92,14 +89,6 @@ watch(
     }
   },
 );
-
-function cardFlipIn() {
-  console.log("flipping")
-  gsap.to(".card_shifted", {
-    duration: 0.5,
-    scaleX: 1,
-  });
-}
 
 onMounted(() => {
   if ("EventPhase" in client.gamestate.phase) {

@@ -98,7 +98,8 @@ export type Crew = {
 
 export type ClientMessage =
   | { GainCommandPoints: { amount: number } }
-  | { DrewAbilityCard: { card: AbilityCard } };
+  | { DrewAbilityCard: { card: AbilityCard } }
+  | { DrewFate: { result: number } }
 
 export type Player = {
   command_tokens: number;
