@@ -26,23 +26,32 @@ const message = computed(() => {
   if (client.gamestate.message_queue.length == 0) {
     return null;
   } else {
-    return client.gamestate.message_queue.slice(-1)[0];
+    let processed = client.messages.length;
+    let message = client.gamestate.message_queue[processed];
+    return message;
   }
 });
 
 const promptComponent = computed(() => {
   const phase = client.gamestate.phase;
 
-  if ("ShipActionPhase" in phase && phase.ShipActionPhase != null) {
-    if (typeof phase.ShipActionPhase === "string") {
-      if (phase.ShipActionPhase == "GalleyAction") {
-        return SelectDiscardForGalleyDialog;
-      }
-    } else if ("DeckAction" in phase.ShipActionPhase) {
-      return DrawForDeckAction;
-    }
+  if ("GalleyPhase" in phase) {
+    return SelectDiscardForGalleyDialog;
   }
-  else if ("ResolveEffectPhase" in phase) {
+  else if ("DeckPhase" in phase) {
+    return DrawForDeckAction;
+  }
+
+  // if ("ShipActionPhase" in phase && phase.ShipActionPhase != null) {
+  //   if (typeof phase.ShipActionPhase === "string") {
+  //     if (phase.ShipActionPhase == "GalleyAction") {
+  //       return SelectDiscardForGalleyDialog;
+  //     }
+  //   } else if ("DeckAction" in phase.ShipActionPhase) {
+  //     return DrawForDeckAction;
+  //   }
+  // }
+  if ("ResolveEffectPhase" in phase) {
     if ("TakeHealthDamage" in phase.ResolveEffectPhase) {
       return DistributeHealthDamage;
     }

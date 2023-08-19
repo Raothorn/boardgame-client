@@ -1,7 +1,7 @@
 <template>
   <v-card border v-if="selectedCrew" class="fill-height w-100">
     <v-card-title class="d-flex justify-center">
-      {{ selectedCrew.name }}
+      {{ selectedCrew.crewName }}
     </v-card-title>
     <v-card-item>
       <v-table class="rounded">

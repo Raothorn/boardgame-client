@@ -9,7 +9,10 @@ export class ClientSocket {
     this.onStateUpdate = (_) => {};
     this.socket = new WebSocket("ws://localhost:2000/");
 
-    this.socket.onopen = (_) => {};
+    this.socket.onopen = (_) => {
+      let name = uuidv4();
+      this.socket.send(name);
+    };
 
     this.socket.onmessage = (event) => {
       let msg = JSON.parse(event.data);
@@ -26,11 +29,19 @@ export class ClientSocket {
     this.onStateUpdate = fn;
   }
 
-  sendMessage(msgType: string, msgData: object) {
-    let msgObj = { msgType: msgType, msgData: msgData };
-    let msg = JSON.stringify(msgObj);
+  sendMessage(msgData: object) {
+    let msg = JSON.stringify(msgData);
     this.socket.send(msg);
   }
+}
+
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    .replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }
 
 export default ClientSocket;
@@ -39,47 +50,44 @@ export type GameState = {
   phase: GamePhase;
   players: Player[];
   crew: Crew[];
-  map: Map;
+  gameMap: GameMap;
   resources: Record<string, number>;
   room: string;
-  keywords: string[];
+  // keywords: string[];
   message_queue: ClientMessage[];
 };
 
 export type GamePhase =
-  | { ShipActionPhase: ShipActionSubphase | null }
+  | { StartTurnPhase: null }
+  | { BridgePhase: null }
+  | { DeckPhase: number[] }
   | { EventPhase: EventCard | null }
-  | { ChallengePhase: ChallengePhase }
+  | { ChallengePhase: { challenge: Challenge, fate: number | null } }
   | { MainActionPhase: [string | null, number] }
-  | { SelectCrewMemberPhase: { crew_ix: number; title: string } }
+  | { SelectCrewMemberPhase: string }
   | { ExplorePhase: Story }
   | { ResolveEffectPhase: Effect };
 
-export type ShipActionSubphase = {
-  DeckAction: { search_tokens_drawn: number[] };
-};
-
-export type ChallengePhase = { challenge: Challenge; skill: number | null };
 export type Effect = { TakeHealthDamage: number };
 
-export type Map = {
-  ship_area: number;
-  adjacent_areas: number[];
-  adjacent_ports: number[];
-  visible_areas: number[];
-  visible_ports: number[];
-  current_region: number;
+export type GameMap = {
+  shipArea: number;
+  adjacentAreas: number[];
+  adjacentPorts: number[];
+  visibleAreas: number[];
+  visiblePorts: number[];
+  currentRegion: number;
 };
 
 export type EventCard = {
-  name: string;
-  options: EventOption[];
-  deck_index: number;
+  eventName: string;
+  eventOptions: string[];
+  eventDeckIndex: number;
 };
 
-export type EventOption = { text: string };
+export type Option = [string, any[]]
 
-export type Challenge = { skill: string; label: string; amount: number };
+export type Challenge = { skill: string, required: number }
 
 export type Story = {
   main_text: string;
@@ -93,19 +101,18 @@ export type StoryOption = {
 };
 
 export type Crew = {
-  name: string;
+  crewName: string;
   fatigue: number;
   damage: number;
   skills: Record<string, number>;
-  equipped_ability_cards: AbilityCard[];
+  equippedAbilities: AbilityCard[];
   status: string[];
 };
 
 export type ClientMessage =
-  | { GainCommandPoints: { amount: number } }
-  | { DrewAbilityCard: { card: SerialCard } }
-  | { DrewFate: { result: number } }
-  | { ModifierTriggered: { text: string; card: SerialCard } };
+  | { GainedCommandPoints: number }
+  | { DrewAbilityCard: AbilityCard }
+  | { DrewFate: number }
 
 export type SerialCard = { label: string; deck: string; index: number };
 
@@ -114,20 +121,20 @@ export type Player = {
   hand: AbilityCard[];
 };
 
-export type AbilityCard = { name: string; deck_ix: number };
+export type AbilityCard = number;
 
 export function defaultGamestate(): GameState {
   return {
-    phase: { ShipActionPhase: null },
+    phase: { StartTurnPhase: null },
     players: [{ command_tokens: 0, hand: [] }],
     crew: [],
-    map: {
-      ship_area: 0,
-      adjacent_areas: [],
-      adjacent_ports: [],
-      visible_areas: [],
-      visible_ports: [],
-      current_region: 0,
+    gameMap: {
+      shipArea: 0,
+      adjacentAreas: [],
+      adjacentPorts: [],
+      visibleAreas: [],
+      visiblePorts: [],
+      currentRegion: 0,
     },
     resources: {},
     room: "",

@@ -1,21 +1,8 @@
 <template>
-  <v-sheet
-    id="ship_board"
-    class="d-flex flex-column justify-center fill-height"
-  >
+  <v-sheet id="ship_board" class="d-flex flex-column justify-center fill-height">
     <div id="ship_container" style="position: relative">
-      <object
-        id="ship_obj"
-        data="assets/ship.svg"
-        type="text/svg"
-        @load="shipLoad"
-      ></object>
-      <v-snackbar
-        :model-value="isSelectRoomPhase"
-        location="bottom center"
-        origin="overlap"
-        contained
-      >
+      <object id="ship_obj" data="assets/ship.svg" type="text/svg" @load="shipLoad"></object>
+      <v-snackbar :model-value="isStartTurnPhase" location="bottom center" origin="overlap" contained>
         Select room to perform ship action
       </v-snackbar>
     </div>
@@ -41,23 +28,25 @@ const rooms: Record<string, string> = {
   "#sickbay": "Sickbay",
 };
 
-const isSelectRoomPhase = computed(() => {
+const isStartTurnPhase = computed(() => {
   let phase = client.gamestate.phase;
-  return "ShipActionPhase" in phase && phase.ShipActionPhase == null;
+  return "StartTurnPhase" in phase;
 });
 
 function selectRoom(roomName: string) {
   let actionMessage = {
-    actionType: "takeShipAction",
-    actionData: { room: roomName, player_ix: 0 },
+    tag: "SelectShipRoom",
+    contents: roomName,
   };
 
-  client.sendMessage("action", actionMessage);
+  client.sendMessage(actionMessage);
 }
 
-watch([isSelectRoomPhase, ship_svg], ([isPhase, _loaded]) => {
+watch([isStartTurnPhase, ship_svg], ([isPhase, _loaded]) => {
   // Force svg resize
+
   resize();
+
   if (ship_svg == undefined) return;
   for (let roomId in rooms) {
     let roomName: string = rooms[roomId];
@@ -71,6 +60,14 @@ watch([isSelectRoomPhase, ship_svg], ([isPhase, _loaded]) => {
       rect?.removeClass("selectableRoom");
       rect?.click(null);
     }
+  }
+});
+
+watch(() => client.selectedPanel, (panel) => {
+  if (panel == 'ship') {
+    setTimeout(() => {
+      resize();
+    }, 50);
   }
 });
 

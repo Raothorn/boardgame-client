@@ -2,12 +2,10 @@
   <div id="map_container" class="fill-height ma-0 pa-0">
     <object
       id="map_obj"
-      :data="svg_source"
+      :data="svgSource"
       type="text/svg"
       @load="mapLoad"
-      :style="svg_loaded ? '' : 'visibility: hidden'"
     ></object>
-    <template v-show="!svg_loaded">Loading...</template>
   </div>
 </template>
 
@@ -23,7 +21,6 @@ var ship: Element;
 var mapHeight: number;
 var root: Element;
 
-const svg_loaded = ref(false);
 
 // Computed Properties
 
@@ -37,14 +34,14 @@ const shouldHighlightPorts = computed(() => {
   return "MainActionPhase" in phase && phase.MainActionPhase[0] == "Explore";
 });
 
-const svg_source = computed(() => {
-  let region = client.gamestate.map.current_region;
-  return `assets/maps/region${region}.svg`;
+const svgSource = computed(() => {
+  let region = client.gamestate.gameMap.currentRegion;
+  return `assets/maps/region1.svg`;
 });
 
 // Watchers
 watch(
-  () => client.gamestate.map.ship_area,
+  () => client.gamestate.gameMap.shipArea,
   (oldArea, newArea) => {
     animateShip(oldArea, newArea, highlight);
   },
@@ -58,7 +55,6 @@ watch([shouldHighlightAreas, shouldHighlightPorts], (_) => {
 
 // Functions
 function mapLoad() {
-  svg_loaded.value = false;
   const obj = document.querySelector("#map_obj") as any;
   const svg = obj.contentDocument as Document;
   let mapContainer = document.getElementById("map_container");
@@ -94,6 +90,7 @@ function mapLoad() {
     scrollViewport(dy * scaleY);
   }
 
+  console.log(mapSvg)
   // Map Dragging
   mapSvg.mousedown(onMouseDown);
   mapSvg.mouseup(onMouseUp);
@@ -115,7 +112,6 @@ function mapLoad() {
 
   highlight();
 
-  svg_loaded.value = true;
 }
 
 function highlight() {
@@ -126,8 +122,8 @@ function highlight() {
 function highlightPorts() {
   if (!mapSvg) return;
 
-  let ports = client.gamestate.map.visible_ports;
-  let adjacent_ports = client.gamestate.map.adjacent_ports;
+  let ports = client.gamestate.gameMap.visiblePorts;
+  let adjacent_ports = client.gamestate.gameMap.adjacentPorts;
 
   for (let portIx of ports) {
     let portId = `#port${portIx}`;
@@ -147,9 +143,9 @@ function highlightPorts() {
 
 function highlightAreas() {
   if (!mapSvg) return;
-  let map = client.gamestate.map;
-  let visibleAreas = map.visible_areas;
-  let adjacentAreas = map.adjacent_areas;
+  let ship = client.gamestate.gameMap;
+  let visibleAreas = ship.visibleAreas;
+  let adjacentAreas = ship.adjacentAreas;
 
   for (let areaIx of visibleAreas) {
     let areaId = `#area${areaIx}`;
@@ -172,7 +168,7 @@ function travelAction(areaIx: number) {
     actionData: { to_area: areaIx, player_ix: 0 },
   };
 
-  client.sendMessage("action", msg);
+  // client.sendMessage("action", msg);
 }
 
 function exploreAction(portIx: number) {
@@ -181,8 +177,8 @@ function exploreAction(portIx: number) {
     actionData: { port: portIx, player_ix: 0 },
   };
 
-  client.sendMessage("action", msg);
-  client.selectPanel("storybook");
+  // client.sendMessage("action", msg);
+  // client.selectPanel("storybook");
 
 }
 

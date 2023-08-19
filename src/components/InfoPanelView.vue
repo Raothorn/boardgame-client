@@ -95,8 +95,14 @@ import Message from './Message.vue'
 const client = useClient();
 
 function restart() {
-  client.sendMessage("restart", {});
-  location.reload();
+
+  let msg = {
+    tag: "Restart",
+    contents: {}
+  };
+  client.selectPanel("home");
+  client.sendMessage(msg);
+  // location.reload();
 }
 
 // Watchers

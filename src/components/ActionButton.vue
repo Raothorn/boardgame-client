@@ -54,7 +54,7 @@ const actionButton = computed(() => {
   let phase = client.gamestate.phase;
 
   // Ship Action Phase
-  if ("ShipActionPhase" in phase) {
+  if ("StartTurnPhase" in phase) {
     return simpleButton("Choose Ship Action", "ship");
   }
 
@@ -92,14 +92,14 @@ const actionButton = computed(() => {
 
   // Select Crew Member phase
   else if ("SelectCrewMemberPhase" in phase) {
-    let msg = {
-      actionType: "selectCrewMemberAction",
-      actionData: { crew_ix: null, player_ix: 0 },
-    };
-
-    return button(phase.SelectCrewMemberPhase.title, "", () => {});
-    //   client.sendMessage("action", msg),
-    // );
+    // let msg = {
+    //   actionType: "selectCrewMemberAction",
+    //   actionData: { crew_ix: null, player_ix: 0 },
+    // };
+    //
+    // return button(phase.SelectCrewMemberPhase.title, "", () => {});
+    // //   client.sendMessage("action", msg),
+    // // );
   }
 
   // Explore phase
@@ -112,10 +112,10 @@ const actionButton = computed(() => {
 
 function drawEventCard() {
   let actionMsg = {
-    actionType: "handleEventPhaseAction",
-    actionData: { player_ix: 0 },
+    tag: "DrawEventCard",
+    content: ""
   };
-  client.sendMessage("action", actionMsg);
+  client.sendMessage(actionMsg);
 }
 
 function endTurn() {

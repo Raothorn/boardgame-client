@@ -22,11 +22,12 @@ export const useClient = defineStore("client", () => {
   // Socket connection
   const clientSocket = ref(new ClientSocket());
   clientSocket.value.$onStateUpdate((newState: GameState) => {
+    console.log(newState);
     _gamestate.value = newState;
   });
 
-  function sendMessage(msgType: string, msgData: object) {
-    clientSocket.value.sendMessage(msgType, msgData);
+  function sendMessage(msgData: object) {
+    clientSocket.value.sendMessage(msgData);
   }
 
   // Global UI state

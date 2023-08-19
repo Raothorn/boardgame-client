@@ -67,7 +67,7 @@
                 </v-col>
                 <v-col cols="2">
                   <div class="d-flex flex-column justify-end">
-                    <template v-for="card in crewMember.equipped_ability_cards">
+                    <template v-for="card in crewMember.equippedAbilities">
                       <v-menu open-on-hover open-delay="100">
                         <template v-slot:activator="{ props }">
                           <v-icon
@@ -78,7 +78,7 @@
                         </template>
                         <v-sheet height="250" style="overflow: hidden">
                           <img
-                            :src="`/assets/ability_card_deck/${card.deck_ix}.png`"
+                            :src="`/assets/ability_card_deck/${card}.png`"
                             class="fill-height"
                           />
                         </v-sheet>
@@ -100,7 +100,7 @@
       contained
     >
       <div v-if="selectCrewMemberPhase" class="d-flex justify-center">
-        <span>{{ selectCrewMemberPhase.title }}</span>
+        <span>{{ selectCrewMemberPhase }}</span>
       </div>
     </v-snackbar>
   </v-sheet>
@@ -128,25 +128,24 @@ const crew = computed(() => {
 });
 
 const selectCrewMemberPhase = computed(() => {
-  // Don't prompt anything unless messages are cleared
-  if (
-    client.gamestate.message_queue.length == 0 &&
-    "SelectCrewMemberPhase" in client.gamestate.phase
-  ) {
+  if ("SelectCrewMemberPhase" in client.gamestate.phase)
     return client.gamestate.phase.SelectCrewMemberPhase;
-  } else {
-    return null;
-  }
+  else
+    return null
+  // Don't prompt anything unless messages are cleared
+  // if (
+  //   // client.gamestate.message_queue.length == 0 &&
+  //   "SelectCrewMemberPhase" in client.gamestate.phase
 });
 
 function clickAction(ix: number) {
   if (selectCrewMemberPhase.value) {
     let msg = {
-      actionType: "selectCrewMemberAction",
-      actionData: { crew_ix: ix, player_ix: 0 },
+      tag: "SelectCrewMember",
+      contents: ix
     };
+    client.sendMessage(msg);
 
-    client.sendMessage("action", msg);
   } else {
     client.selectedItem = { crewIx: ix };
   }
@@ -162,7 +161,7 @@ function skillIcon(name: string) {
 }
 
 function firstName(crew: Crew) {
-  return crew.name.split(" ")[0].toLowerCase();
+  return crew.crewName.split(" ")[0].toLowerCase();
 }
 </script>
 

@@ -4,7 +4,7 @@
       <v-row class="fill-height align-center">
         <v-col cols="8" md="6">
           <v-card-item class="d-flex justify-center">
-            <img :src="`../../assets/event_deck/${event.deck_index}.png`" />
+            <img :src="`../../assets/event_deck/${event.eventDeckIndex}.png`" />
           </v-card-item>
         </v-col>
         <v-col cols="4" md="6" class="fill-height">
@@ -15,9 +15,9 @@
                 size="x-large"
                 variant="tonal"
                 class="my-2"
-                v-if="event.options.length == 0"
+                v-if="event.eventOptions.length == 0"
               >Continue</v-btn>
-            <template v-else v-for="(option, ix) in event.options">
+            <template v-else v-for="(option, ix) in event.eventOptions">
               <v-btn
                 @click="optionSelected(ix)"
                 color="primary"
@@ -26,7 +26,7 @@
                 variant="tonal"
               >
                 <template v-if="$vuetify.display.mdAndUp">
-                  {{ option.text }}
+                  {{ option[0] }}
                 </template>
                 <template v-else>
                   Option {{ ix + 1 }}
@@ -69,19 +69,11 @@ onMounted(() => {
 
 function optionSelected(optionIx: number| null) {
   let actionMessage = {
-    actionType: "selectEventOptionAction",
-    actionData: { player_ix: 0, option_ix: optionIx },
+    tag: "SelectEventOption",
+    contents: optionIx,
   };
 
-  client.sendMessage("action", actionMessage);
-}
-
-function drawEventCard() {
-  let actionMsg = {
-    actionType: "handleEventPhaseAction",
-    actionData: { player_ix: 0 },
-  };
-  client.sendMessage("action", actionMsg);
+  client.sendMessage(actionMessage);
 }
 </script>
 

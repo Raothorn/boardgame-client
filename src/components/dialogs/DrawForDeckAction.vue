@@ -1,23 +1,14 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title
-        ><div class="d-flex justify-center">
-          Draw search tokens
-        </div></v-card-title
-      >
+      <v-card-title>
+        <div class="d-flex justify-center">Draw search tokens</div>
+      </v-card-title>
       <v-card-item>
-        <div class="d-flex justify-center">
-          <v-chip-group v-model="tokenId">
-            <v-chip
-              v-for="(token, ix) in tokens"
-              class="mx-1"
-              :key="ix"
-              :value="token"
-            >
-              {{ token }}
-            </v-chip>
-          </v-chip-group>
+        <div class="d-flex justify-space-evenly">
+          <template v-for="(token, ix) in tokens">
+            <img :src="`/assets/search_deck/${token}.png`" width="100" @click="tokenIx = ix" />
+          </template>
         </div>
       </v-card-item>
       <v-card-actions class="d-flex justify-center">
@@ -32,38 +23,29 @@ import useClient from "@/stores/ClientState";
 import { Ref, computed, inject, ref, watch } from "vue";
 
 const client = useClient();
-const tokenId = ref();
+const tokenIx = ref();
 
 const tokens = computed(() => {
   let phase = client.gamestate.phase;
-  if (
-    phase == undefined ||
-    typeof phase === "string" ||
-    !("ShipActionPhase" in phase) ||
-    phase.ShipActionPhase == null ||
-    typeof phase.ShipActionPhase === "string" ||
-    !("DeckAction" in phase.ShipActionPhase)
-  ) {
-    return [];
-  }
-
-  return phase.ShipActionPhase.DeckAction.search_tokens_drawn;
+  if ("DeckPhase" in phase) return phase.DeckPhase;
+  else return [];
 });
 
-watch(tokenId, (newId) => {
-  let actionMessage = {
-    actionType: "chooseTokenForDeckAction",
-    actionData: { player_ix: 0, token_id: newId },
+watch(tokenIx, (newId) => {
+  let msg = {
+    tag: "SelectSearchToken",
+    contents: newId
+
   };
 
-  client.sendMessage("action", actionMessage);
+  client.sendMessage(msg);
 });
 
 function draw() {
-  let actionMessage = {
-    actionType: "drawForDeckAction",
-    actionData: { player_ix: 0 },
+  let msg = {
+    tag: "DrawSearchToken",
+    contents: {},
   };
-  client.sendMessage("action", actionMessage);
+  client.sendMessage(msg);
 }
 </script>

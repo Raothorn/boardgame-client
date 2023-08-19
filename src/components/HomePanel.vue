@@ -1,18 +1,19 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="4">
         <v-card :elevation="5" color="grey-darken-3">
           <v-card-title>Ship</v-card-title>
           <v-card-item>
             <div class="d-flex flex-column">
               <span>Coins: {{ client.gamestate.resources["Coin"] }}</span>
               <span>Meat: {{ client.gamestate.resources["Meat"] }}</span>
+              <span>Vegetables: {{ client.gamestate.resources["Veggies"] }}</span>
             </div>
           </v-card-item>
         </v-card>
       </v-col>
-      <v-col cols="10">
+      <v-col cols="8">
         <v-card :elevation="5" color="grey-darken-3">
           <v-card-title>Player</v-card-title>
           <v-card-item>
@@ -25,7 +26,7 @@
               <div v-for="(card, hand_ix) in player.hand">
                 <img
                   class="mx-2"
-                  :src="abilityCardImage(card.deck_ix)"
+                  :src="abilityCardImage(card)"
                   width="120"
                 />
                 <v-menu activator="parent">
@@ -64,14 +65,14 @@ function abilityCardImage(ix: number) {
   return `/assets/ability_card_deck/${ix}.png`;
 }
 
-function equipAbilityCard(hand_ix: number) {
+function equipAbilityCard(handIx: number) {
   if ("SelectCrewMemberPhase" in client.gamestate.phase) return;
 
   let msg = {
-    actionType: "selectAbilityCardToEquipAction",
-    actionData: {hand_ix: hand_ix, player_ix: 0}
+    tag: "EquipAbilityCard",
+    contents: handIx
   };
 
-  client.sendMessage("action", msg);
+  client.sendMessage(msg);
 }
 </script>
